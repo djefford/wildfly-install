@@ -16,14 +16,17 @@ if [ -z $JAVA_HOME ]; then
 fi
 
 # Formatting values
-length=50
+title="WildflyInstall" 					# String used in log messages related to full script.
+length=40
+divider="===================="
 
 
+printf '=%.s' {1..40} ; echo
+printf " %s\n" "Starting $title Script..."
+printf '=%.s' {1..40} ; echo
 
-#createDirectoryStructure $WHO_HOME $WHO_LOGS $DEV_HOME
+createDirectoryStructure $HOME_DIR $LOGS_DIR $DEV_HOME
 
-#verifyJava $JAVA_HOME
+#VerifyJava $JAVA_HOME
 
 
-
-verifyJava
