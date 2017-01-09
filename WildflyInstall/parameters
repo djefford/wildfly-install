@@ -1,0 +1,8 @@
+# Directory locations.
+HOME_DIR="/opt/"
+LOGS_DIR="/opt/logs"
+DEV_HOME="/od"
+
+SOFTWARE_HOME="${HOME_DIR}/software"
+
+
