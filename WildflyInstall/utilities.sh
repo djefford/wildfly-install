@@ -1,31 +1,33 @@
 #!/bin/sh
 # Functions for installation script.
 
+# Format for printf output
+outformat=" %s\t%s %s\n"
 
 # Function: create default directory structure.
 # Arguments: List of directories to be created.
 createDirectoryStructure () {
 
-	printf "${FUNCNAME}: I: Starting.\n"
+	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
 
 	if [ -z "$1" ]; then				# Verify at least one argument is passed.
-		printf "${FUNCNAME}: ERROR: No arguments passed to function.\n"
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "No arguments passed to function."
 		exit 1
 	fi
 
 	for i in "$@"; do					# For each directory passed, create directory.
 		if [ ! -d ${i} ]; then			# Verify directory does not already exist.
-			printf "${FUNCNAME}: W: ${i} Missing... Creating directory\n"
+			printf "$outformat" "${FUNCNAME}:" "W:" "${i} Missing... Creating directory"
 			mkdir -p ${i}; rc=$?		# Create directory and capture return code.
 			if [ ${rc} = 0 ]; then
-				printf "${FUNCNAME}: I: Created ${i} Successfully...\n"
+				printf "$outformat" "${FUNCNAME}:" "I:" "Created ${i} Successfully..."
 			fi
 		else
-			printf "${FUNCNAME}: I: ${i} already exists. Skipping.\n"
+			printf "$outformat" "${FUNCNAME}:" "I:" "${i} already exists. Skipping."
 		fi
 	done
 
-	printf "${FUNCNAME}: I: Completed.\n"
+	printf "$outformat" "${FUNCNAME}:" "I:" "Completed."
 
 }
 
@@ -34,23 +36,22 @@ createDirectoryStructure () {
 # Arguments: JAVA_HOME (ex. /usr/bin/java)
 verifyJava () {
 
-	printf "${FUNCNAME}: I: Starting.\n"
+	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
 
 	if [ -z "$1" ]; then				# Verify argument (JAVA_HOME) is passed.
-		printf "${FUNCNAME}: E: JAVA_HOME variable is undefined.\n"
+		printf "$outformat" "${FUNCNAME}:" "E:" "JAVA_HOME variable is undefined."
 		exit 1
 	fi
 
 	${1} -version ; rc=$?				# Verify Java returns
 	
 	if [ ${rc} = 0 ]; then
-		printf "${FUNCNAME}: I: Java install verified. Please record version number...\n"
-		sleep 5
+		printf "$outformat" "${FUNCNAME}:" "I:" "Java install verified."
 	else
-		printf "${FUNCNAME}: ERROR: Unable to verify Java installation.\n"
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to verify Java installation."
 		exit 1
 	fi
 
-	printf "${FUNCNAME}: I: Completed.\n"
+	printf "$outformat" "${FUNCNAME}:" "I:" "Completed."
 
 } 
