@@ -41,3 +41,5 @@ sleep 2
 verifyJava $JAVA_HOME
 
 echo $divider
+
+# Deploy JBoss
