@@ -55,4 +55,12 @@ verifyJava () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Completed."
 
-} 
+}
+
+
+# Function: Install Wildfly
+# Arguments: Full file path to installatio media (ex. /opt/media/wildfly-8.2.0.Final.zip)
+installWildfly () {
+
+
+}
