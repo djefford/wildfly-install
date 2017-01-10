@@ -43,6 +43,7 @@ verifyJava () {
 		exit 1
 	fi
 
+	printf "$outformat" "${FUNCNAME}:" "I:" "Verification output:"
 	${1} -version ; rc=$?				# Verify Java returns
 	
 	if [ ${rc} = 0 ]; then
