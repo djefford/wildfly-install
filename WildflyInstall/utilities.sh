@@ -79,8 +79,14 @@ installWildfly () {
 	unpack -q $media -d $unpack_loc ; rc=$?
 
 	if [ ${rc} = 0 ]; then
-
+		printf "$outformat" "${FUNCNAME}:" "I:" "Media unpacked successfully."
+	else
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Problem unpacking media."
+		exit 1
 	fi
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "Completed."
+
 }
 
 
