@@ -5,4 +5,4 @@ DEV_HOME="/od"
 
 SOFTWARE_HOME="${HOME_DIR}/software"
 
-
+MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
