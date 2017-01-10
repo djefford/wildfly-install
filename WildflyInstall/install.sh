@@ -17,16 +17,27 @@ fi
 
 # Formatting values
 title="WildflyInstall" 					# String used in log messages related to full script.
-length=40
-divider="===================="
+divider=`printf '=%.s' {1..40} ; echo`
 
 
-printf '=%.s' {1..40} ; echo
+echo $divider
 printf " %s\n" "Starting $title Script..."
-printf '=%.s' {1..40} ; echo
+echo $divider
+
+# Create initial directory structure.
+printf " %s\n" "Verifying and creating directory structure."
+echo $divider
+sleep 2
 
 createDirectoryStructure $HOME_DIR $LOGS_DIR $DEV_HOME
 
-#VerifyJava $JAVA_HOME
+echo $divider
 
+# Verify Java installation.
+printf " %s\n" "Verifying Java installation at ${JAVA_HOME}"
+echo $divider
+sleep 2
 
+verifyJava $JAVA_HOME
+
+echo $divider
