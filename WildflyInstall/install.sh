@@ -2,7 +2,7 @@
 ############################################################
 # Author: Dustin Jefford
 # 
-# Description: Installs Red Hat JBoss EAP 7.x
+# Description: Installs, patches, and configures Wildfly 8.x
 #
 ############################################################
 
@@ -43,3 +43,11 @@ verifyJava $JAVA_HOME
 echo $divider
 
 # Deploy JBoss
+printf " %s\n" "Deploying Wildfly from ${MEDIA_HOME} to ${SOFTWARE_HOME}"
+echo $divider
+sleep 2
+
+# installWildfly takes 2 arguments "MEDIA_HOME" and "SOFTWARE_HOME"
+installWildfly $MEDIA_HOME $SOFTWARE_HOME
+
+echo $divider
