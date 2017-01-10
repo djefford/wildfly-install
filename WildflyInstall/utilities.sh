@@ -4,8 +4,8 @@
 # Format for printf output
 outformat=" %s\t%s %s\n"
 
-# Function: create default directory structure.
-# Arguments: List of directories to be created.
+# Function: 	Create default directory structure.
+# Arguments: 	List of directories to be created.
 createDirectoryStructure () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
@@ -32,14 +32,14 @@ createDirectoryStructure () {
 }
 
 
-# Function: Verify Java Installation
-# Arguments: JAVA_HOME (ex. /usr/bin/java)
+# Function: 	Verify Java Installation
+# Arguments: 	JAVA_HOME (ex. /usr/bin/java)
 verifyJava () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
 
 	if [ -z "$1" ]; then				# Verify argument (JAVA_HOME) is passed.
-		printf "$outformat" "${FUNCNAME}:" "E:" "JAVA_HOME variable is undefined."
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "JAVA_HOME variable is undefined."
 		exit 1
 	fi
 
@@ -58,9 +58,30 @@ verifyJava () {
 }
 
 
-# Function: Install Wildfly
-# Arguments: Full file path to installatio media (ex. /opt/media/wildfly-8.2.0.Final.zip)
+# Function: 	Install Wildfly
+# Arguments: 	MEDIA_HOME (ex. /opt/media/wildfly-8.2.0.Final.zip) SOFTWARE_HOME 
+# 				(ex. $HOME_DIR/software)
 installWildfly () {
 
+	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
 
+	if [ -z "$1" ] || [ ! -d "$1" ]; then	# Verify argument (MEDIA_HOME) passed.
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${1}."
+		exit 1
+	fi
+
+	# Grab input variables
+	media=${1}
+	unpack_loc=${2}
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "Unpacking media to ${2}..."
+
+	unpack -q $media -d $unpack_loc ; rc=$?
+
+	if [ ${rc} = 0 ]; then
+
+	fi
 }
+
+
+
