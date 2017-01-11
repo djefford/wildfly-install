@@ -43,7 +43,7 @@ verifyJava $JAVA_HOME
 echo $divider
 
 # Deploy JBoss
-printf " %s\n" "Deploying Wildfly from ${MEDIA_HOME} to ${SOFTWARE_HOME}"
+printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
 echo $divider
 sleep 2
 
