@@ -59,7 +59,7 @@ verifyJava () {
 
 
 # Function: 	Install Wildfly
-# Arguments: 	MEDIA_HOME (ex. /opt/media/wildfly-8.2.0.Final.zip) SOFTWARE_HOME 
+# Arguments: 	MAIN_MEDIA (ex. /opt/media/wildfly-8.2.0.Final.zip) SOFTWARE_HOME 
 # 				(ex. $HOME_DIR/software)
 installWildfly () {
 

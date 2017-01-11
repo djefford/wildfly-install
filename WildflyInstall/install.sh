@@ -47,7 +47,7 @@ printf " %s\n" "Deploying Wildfly from ${MEDIA_HOME} to ${SOFTWARE_HOME}"
 echo $divider
 sleep 2
 
-# installWildfly takes 2 arguments "MEDIA_HOME" and "SOFTWARE_HOME"
-installWildfly $MEDIA_HOME $SOFTWARE_HOME
+# installWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
+installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
