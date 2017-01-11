@@ -65,7 +65,7 @@ installWildfly () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
 
-	if [ -z "$1" ] || [ ! -d "$1" ]; then	# Verify argument (MEDIA_HOME) passed.
+	if [ -z "$1" ] || [ ! -f "$1" ]; then	# Verify argument (MEDIA_HOME) passed.
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${1}."
 		exit 1
 	fi
@@ -76,7 +76,7 @@ installWildfly () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Unpacking media to ${2}..."
 
-	unpack -q $media -d $unpack_loc ; rc=$?
+	unzip -q $media -d $unpack_loc ; rc=$?
 
 	if [ ${rc} = 0 ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Media unpacked successfully."
