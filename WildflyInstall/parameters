@@ -1,5 +1,5 @@
 # Directory locations.
-HOME_DIR="/opt/"
+HOME_DIR="/opt"
 LOGS_DIR="/opt/logs"
 DEV_HOME="/od"
 
