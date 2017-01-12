@@ -90,4 +90,23 @@ installWildfly () {
 }
 
 
+# Function:		Escape and replace custom variables
+# Arguments:	Custom Variable, target variable, file to udpate
+replaceVar() {
+
+	# set variables
+	custvar=$1
+	tarvar=$2
+	file=$3
+
+	# escape variable
+	escvar=$(echo "${custvar}" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')
+
+	echo $escvar
+	echo $tarvar
+	echo $file
+
+	echo 'sed -i "s/${tarvar}/${custvar}/g" $file'
+
+}
 
