@@ -4,6 +4,20 @@
 # Format for printf output
 outformat=" %s\t%s %s\n"
 
+# Function:		Escapes special characters in a variable.
+# Arguments:	Variable to escape
+escapevar() {
+
+	variable=$1
+	escvariable=$(echo "${variable}" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')
+
+	echo $escvariable
+
+	return 0
+
+}
+
+
 # Function: 	Create default directory structure.
 # Arguments: 	List of directories to be created.
 createDirectoryStructure () {
@@ -59,8 +73,8 @@ verifyJava () {
 
 
 # Function: 	Install Wildfly
-# Arguments: 	MAIN_MEDIA (ex. /opt/media/wildfly-8.2.0.Final.zip) SOFTWARE_HOME 
-# 				(ex. $HOME_DIR/software)
+# Arguments: 	MAIN_MEDIA (ex. /opt/media/wildfly-8.2.0.Final.zip)i, SOFTWARE_HOME 
+# 				(ex. $HOME_DIR/software), WILDFLY_HOME (ex. $HOME_DIR/software/wildfly)
 installWildfly () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
@@ -82,6 +96,17 @@ installWildfly () {
 		printf "$outformat" "${FUNCNAME}:" "I:" "Media unpacked successfully."
 	else
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Problem unpacking media."
+		exit 1
+	fi
+
+	media_home=$(
+
+	mv $unpack_loc/wildfly-* $WILDFLY_HOME ; rc=$?		# Move extracted directory to new location
+
+	if [ ${rc} = 0 ]; then
+		printf "$outformat" "${FUNCNAME}:" "I:" "Unpacked media moved to $WILDFLY_HOME ."
+	else
+		printf "$outformat" "${FUNCNAME}:" "ERROR" "Could not move unpacked media to $WILDFLY_HOME ."
 		exit 1
 	fi
 
