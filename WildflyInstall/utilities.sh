@@ -74,7 +74,7 @@ verifyJava () {
 
 # Function: 	Install Wildfly
 # Arguments: 	MAIN_MEDIA (ex. /opt/media/wildfly-8.2.0.Final.zip)i, SOFTWARE_HOME 
-# 				(ex. $HOME_DIR/software), WILDFLY_HOME (ex. $HOME_DIR/software/wildfly)
+# 				(ex. $HOME_DIR/software)
 installWildfly () {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Starting."
@@ -99,14 +99,18 @@ installWildfly () {
 		exit 1
 	fi
 
-	media_home=$(
+	# Get location where media was extracted.
+	unpacked_media_dir=$(ls ${unpack_loc} | grep -o "wildfly-[0-9]\.[0-9]\..*")
 
-	mv $unpack_loc/wildfly-* $WILDFLY_HOME ; rc=$?		# Move extracted directory to new location
+	# Remove end chars "-Final" to create new location.
+	media_home_dir=$(sed -e 's/\.Final$//' <<< ${unpacked_media_dir})
+
+	mv ${unpack_loc}/${unpacked_media_dir} ${unpack_loc}/${media_home_dir}  ; rc=$?		# Move extracted directory to new location
 
 	if [ ${rc} = 0 ]; then
-		printf "$outformat" "${FUNCNAME}:" "I:" "Unpacked media moved to $WILDFLY_HOME ."
+		printf "$outformat" "${FUNCNAME}:" "I:" "Unpacked media moved to ${unpack_loc}/${media_home_dir}."
 	else
-		printf "$outformat" "${FUNCNAME}:" "ERROR" "Could not move unpacked media to $WILDFLY_HOME ."
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Could not move unpacked media to ${unpack_loc}/${media_home_dir}."
 		exit 1
 	fi
 
@@ -124,10 +128,7 @@ replaceVar() {
 	newstring=$2
 	file=$3
 
-	# escape variable
-	escvar=$(echo "${newstring}" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')
-
-	sed -i "s/${tarvar}/${escvar}/g" $file
+	sed -i "s/${tarvar}/$(escapevar ${newstring})/g" $file
 
 }
 
