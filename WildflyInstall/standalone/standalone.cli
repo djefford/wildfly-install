@@ -9,9 +9,18 @@ batch
 ### Remove example configurations
 /subsystem=datasources/data-source=ExampleDS:remove()
 
-### Create mail provider
-/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+## Need to add in values to secure undertow
 
+### Create mail provider and update socket bindings
+/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="VALUE")
+
+# Disable web admin management interface
+# /socket-binding-group=standard-sockets/socket-binding=management-https:undefine-attribute(name=port)
+# /socket-binding-group=standard-sockets/socket-binding=management-http:undefine-attribute(name=port)
+
+### Configure keystore
 
 
 run-batch
