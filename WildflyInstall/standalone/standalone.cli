@@ -1,4 +1,17 @@
 batch
 
+### Set Default Name for initial standalone installation.
+:write-attribute(name=name,value="test-standalone-host")
+
+### Configure default JVM server.log location
+/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
+
+### Remove example configurations
+/subsystem=datasources/data-source=ExampleDS:remove()
+
+### Create mail provider
+/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+
+
 
 run-batch
