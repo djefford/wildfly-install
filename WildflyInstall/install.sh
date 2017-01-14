@@ -17,7 +17,7 @@ fi
 
 # Formatting values
 title="WildflyInstall" 					# String used in log messages related to full script.
-divider=`printf '=%.s' {1..40} ; echo`
+divider=`printf '=%.s' {1..40} ; echo`	# Prints dividing line of "=" in logging output.
 
 
 echo $divider
@@ -47,7 +47,12 @@ printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
 echo $divider
 sleep 2
 
-# installWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
+# InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
 installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
+
+
+
+
+
