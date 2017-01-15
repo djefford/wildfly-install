@@ -173,7 +173,12 @@ genKeystore () {
 	else
 		# If keystore file exists in default location, move to output directory.
 		printf "$outformat" "${FUNCNAME}:" "W:" "$jksname found in default ./ssl location. Using that keystore."
-		mv ./ssl/${jksname} ${outputdir}
+		cp ./ssl/${jksname} ${outputdir} ; rc=$?	# Copy file.
+		if [ ${rc} = 0 ]; then
+			printf "$outformat" "${FUNCNAME}:" "I:" "Successfully copied $jksname to ${outputdir}."
+		else
+			printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to copy $jksname to ${outputdir}."
+		fi
 	fi
 
 }
