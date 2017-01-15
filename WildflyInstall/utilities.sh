@@ -133,23 +133,48 @@ replaceVar() {
 }
 
 
-# Function:		Generates a keystore w/ self-signed certificate
-# Arguments:	cert alias (ex. hostname),  output directory (ex. /opt/wildfly/ss/keystore.jks)
+# Function:		Generates a keystore w/ self-signed certificate, if keystore exists, skips creating
+# 				new keystore.
+# Arguments:	keystore name, cert alias (ex. hostname), output directory (ex. /opt/wildfly/ssl)
 genKeystore () {
 
+	jksname=$1
+	certalias=$2
+	outputdir=$3
+
 	# Verify output directory and create if necessary
-	if [ ! -d ${1} ]; then
-		printf "$outformat" "${FUNCNAME}:" "W:" "${i} Missing... Creating directory."
-		mkdir -p ${i}; rc=$?        # Create directory and capture return code.
+	if [ ! -d ${outputdir} ]; then
+		printf "$outformat" "${FUNCNAME}:" "W:" "${outputdir} Missing... Creating directory."
+		mkdir -p ${outputdir}; rc=$?        # Create directory and capture return code.
 		if [ ${rc} = 0 ]; then
-			printf "$outformat" "${FUNCNAME}:" "I:" "Created ${i} Successfully..."
+			printf "$outformat" "${FUNCNAME}:" "I:" "Created ${outputdir} Successfully..."
 		fi
 	else
-		printf "$outformat" "${FUNCNAME}:" "I:" "${i} already exists. Skipping."
+		printf "$outformat" "${FUNCNAME}:" "I:" "${outputdir} already exists. Skipping."
 	fi
 
-	keytool -genkey -keyalg RSA -alias 
+	# Check for existence of keystore in default location (./ssl), if it exists, move to output dir,
+	# 	if not, create new keystore 
+	if [ ! -f ./ssl/${jksname} ]; then
+	
+		printf "$outformat" "${FUNCNAME}:" "I:" "$jksname not found in default ./ssl location, creating new keystore."
+	
+		# Create new keystore.
+		keytool -genkey -keyalg RSA -alias ${certalias} -keysize 2048 -keystore ${outputdir}/${jksname}
+		rc=$?
 
+		if [ ${rc} = 0 ]; then
+			printf "$outformat" "${FUNCNAME}:" "I:" "${jksname} created successfully in ${outputdir}."
+		else
+			printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to create ${jksname} at ${outputdir}."
+			exit 1
+		fi
+
+	else
+		# If keystore file exists in default location, move to output directory.
+		printf "$outformat" "${FUNCNAME}:" "W:" "$jksname found in default ./ssl location. Using that keystore."
+		mv ./ssl/${jksname} ${outputdir}
+	fi
 
 }
 
