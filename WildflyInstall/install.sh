@@ -45,16 +45,16 @@ printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
 echo $divider ; sleep 2
 
 # InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
-installWildfly $MAIN_MEDIA $SOFTWARE_HOME
+#installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
 
-# Create SSL vaults - keystore.jks, truststore.jks, and vault.jks
-printf " %s\n" "Creating SSL keystores."
-echo $divider ; sleep 2
 
 wildfly_home=$(ls ${unpack_loc} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly home directory
 
 
+# Create SSL vaults - keystore.jks, truststore.jks, and vault.jks
+printf " %s\n" "Creating SSL keystores."
+echo $divider ; sleep 2
 
 
