@@ -16,6 +16,9 @@ INSTALL_TYPE="standalone"
 # LDAP related configurations
 ADMIN_GROUP=""
 
+# Keystore information
+
+
 # Vault related information
 VAULT_ENC_FILE_DIR="vault"
 VAULT_KEYSTORE_PASSWORD="changeit"
