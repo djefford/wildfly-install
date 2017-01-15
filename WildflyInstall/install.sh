@@ -26,8 +26,7 @@ echo $divider
 
 # Create initial directory structure.
 printf " %s\n" "Verifying and creating directory structure."
-echo $divider
-sleep 2
+echo $divider ; sleep 2
 
 createDirectoryStructure $HOME_DIR $LOGS_DIR $DEV_HOME
 
@@ -35,8 +34,7 @@ echo $divider
 
 # Verify Java installation.
 printf " %s\n" "Verifying Java installation at ${JAVA_HOME}"
-echo $divider
-sleep 2
+echo $divider ; sleep 2
 
 verifyJava $JAVA_HOME
 
@@ -44,14 +42,18 @@ echo $divider
 
 # Deploy JBoss
 printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
-echo $divider
-sleep 2
+echo $divider ; sleep 2
 
 # InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
 installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
 
+# Create SSL vaults - keystore.jks, truststore.jks, and vault.jks
+printf " %s\n" "Creating SSL keystores."
+echo $divider ; sleep 2
+
+wildfly_home=$(ls ${unpack_loc} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly home directory
 
 
 
