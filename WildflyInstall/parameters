@@ -7,8 +7,13 @@ SOFTWARE_HOME="${HOME_DIR}/software"
 
 MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
 
+# Environment information
+HOSTNAME="app1.mustin.vm"
+
 # Installation type, either 'standalone','domain_master', 'domain_slave'
 INSTALL_TYPE="standalone"
 
 # LDAP related configurations
 ADMIN_GROUP=""
+
+
