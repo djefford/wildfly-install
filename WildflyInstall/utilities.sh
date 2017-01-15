@@ -132,3 +132,28 @@ replaceVar() {
 
 }
 
+
+# Function:		Generates a keystore w/ self-signed certificate
+# Arguments:	cert alias (ex. hostname),  output directory (ex. /opt/wildfly/ss/keystore.jks)
+genKeystore () {
+
+	# Verify output directory and create if necessary
+	if [ ! -d ${1} ]; then
+		printf "$outformat" "${FUNCNAME}:" "W:" "${i} Missing... Creating directory."
+		mkdir -p ${i}; rc=$?        # Create directory and capture return code.
+		if [ ${rc} = 0 ]; then
+			printf "$outformat" "${FUNCNAME}:" "I:" "Created ${i} Successfully..."
+		fi
+	else
+		printf "$outformat" "${FUNCNAME}:" "I:" "${i} already exists. Skipping."
+	fi
+
+	keytool -genkey -keyalg RSA -alias 
+
+
+}
+
+
+
+
+
