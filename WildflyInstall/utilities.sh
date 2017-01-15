@@ -157,7 +157,7 @@ genKeystore () {
 	# 	if not, create new keystore 
 	if [ ! -f ./ssl/${jksname} ]; then
 	
-		printf "$outformat" "${FUNCNAME}:" "I:" "$jksname not found in default ./ssl location, creating new keystore."
+		printf "$outformat" "${FUNCNAME}:" "I:" "$jksname not found in default ./ssl location, creating new keystore with '${certalias}' alias."
 	
 		# Create new keystore.
 		keytool -genkey -keyalg RSA -alias ${certalias} -keysize 2048 -keystore ${outputdir}/${jksname}
@@ -184,6 +184,52 @@ genKeystore () {
 }
 
 
+# Function:		Add value to vault.
+# Arguments:	WILDFLY HOME, Encrypted file directory, keystore url, keystore password, salt, keystore alias,
+#				iteration count, attribute name, vault block, secured value (password), 'add' or 'check'
+vaultAddItem () {
 
+	# Map variables
+	wildfly_home=$1
+	enc_file_dir=$2
+	url=$3
+	pass=$4
+	salt=$5
+	key_alias=$6
+	iteration=$7
+	attribute=$8
+	block=$9
+	sec_value=${10}
+	add_or_check=${11}
+
+	# Verify vault.sh script
+	if [ ! -f $wildfly_home/bin/vault.sh ]; then
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${wildfly_home}/bin/vault.sh."
+		exit 1
+	fi
+
+	if [ "$add_or_check" == "add" ]; then
+
+		printf "$outformat" "${FUNCNAME}:" "I:" "Adding value to vault."
+
+		# Add attribute
+		$wildfly_home/bin/vault.sh -e $enc_file_dir -k $url -p "${pass}" -s $salt -v $key_alias -i $iteration -a $attribute -b $block -x "$sec_value" ; rc=$?
+	
+	elif [ "$add_or_check" == "check" ]; then
+
+		printf "$outformat" "${FUNCNAME}:" "I:" "Checking for $attribute in $block block."
+		# Check for attribute
+		$wildfly_home/bin/vault.sh -e $enc_file_dir -k $url -p "${pass}" -s $salt -v $key_alias -i $iteration -a $attribute -b $block -c ; rc=$?
+
+	fi
+
+	if [ ${rc} == 0 ]; then
+		printf "$outformat" "${FUNCNAME}:" "I:" "Vault process completed successfully."
+	else
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Vault process did not complete successfully."
+		exit 1
+	fi
+
+}
 
 
