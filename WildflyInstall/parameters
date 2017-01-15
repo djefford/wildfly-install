@@ -16,4 +16,9 @@ INSTALL_TYPE="standalone"
 # LDAP related configurations
 ADMIN_GROUP=""
 
+# Vault related information
+VAULT_ENC_FILE_DIR="vault"
+VAULT_KEYSTORE_PASSWORD="changeit"
+VAULT_SALT="12345678"
+VAULT_ITERATION_COUNT="100"
 
