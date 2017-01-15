@@ -50,11 +50,21 @@ echo $divider ; sleep 2
 echo $divider
 
 
-wildfly_home=$(ls ${unpack_loc} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly home directory
+wildfly_home=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly home directory
 
-
-# Create SSL vaults - keystore.jks, truststore.jks, and vault.jks
-printf " %s\n" "Creating SSL keystores."
+# Create SSL vaults - keystore.jks, and vault.jks
+printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
 echo $divider ; sleep 2
+
+# Create java keystore for wildfly.
+genKeystore keystore.jks ${HOSTNAME} ${SOFTWARE_HOME}/${wildfly_home}/ssl
+
+echo $divider
+
+# Create vault keystore for wildfly
+genKeystore vault.jks vault ${SOFTWARE_HOME}/${wildfly_home}/ssl
+
+echo $divider
+
 
 
