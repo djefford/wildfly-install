@@ -1,7 +1,7 @@
 batch
 
 ### Set Default Name for initial standalone installation.
-:write-attribute(name=name,value="test-standalone-host")
+:write-attribute(name=name,value="default")
 
 ### Configure default JVM server.log location
 /subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
