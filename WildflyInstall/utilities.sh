@@ -58,7 +58,7 @@ verifyJava () {
 	fi
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Verification output:"
-	${1} -version ; rc=$?				# Verify Java returns
+	${1}/bin/java -version ; rc=$?				# Verify Java returns
 	
 	if [ ${rc} = 0 ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Java install verified."
