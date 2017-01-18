@@ -50,19 +50,20 @@ installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 echo $divider
 
 
-wildfly_home=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly home directory
+wildfly_dir=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly directory
+wildfly_home=${SOFTWARE_HOME}/${wildfly_dir}								# Wildfly Home, full path
 
 # Create SSL vaults - keystore.jks, and vault.jks
 printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
 echo $divider ; sleep 2
 
 # Create java keystore for wildfly.
-genKeystore keystore.jks ${HOSTNAME} ${SOFTWARE_HOME}/${wildfly_home}/ssl
+genKeystore keystore.jks ${HOSTNAME} ${wildfly_home}/ssl
 
 echo $divider
 
 # Create vault keystore for wildfly
-genKeystore vault.jks vault ${SOFTWARE_HOME}/${wildfly_home}/ssl
+genKeystore vault.jks vault ${wildfly_home}/ssl
 
 echo $divider
 
@@ -70,9 +71,11 @@ echo $divider
 printf " %s\n" "Configuring vault."
 echo $divider ; sleep 2
 
+vaultAddItem 
+
 
 # Verify input and capture masked password.
-output=`vaultAddItem "/opt/software/wildfly-8.2.0" "/opt/software/wildfly-8.2.0/vault" "/opt/software/wildfly-8.2.0/ssl/vault.jks" "changeit" "12345678" "vault" "100" "attribute1" "block1" "password1" "add" | grep -o "\"MASK-.*\""`
+masked=`vaultAddItem "/opt/software/wildfly-8.2.0" "/opt/software/wildfly-8.2.0/vault" "/opt/software/wildfly-8.2.0/ssl/vault.jks" "changeit" "12345678" "vault" "100" "attribute1" "block1" "password1" "add" | grep -o "\"MASK-.*\""`
 
 
 # Substitue variables and configure wildfly.
@@ -91,17 +94,17 @@ for file in `ls ./working`; do
 	printf " %s\n" "Updating ${file_loc}..."
 
 	replaceVar "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
-	replaceVar "{{WILDFLY_HOME}}" "${SOFTWARE_HOME}/${wildfly_home}" "$file_loc"
+	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
 	
 done
 
-printf " %s\n" "Setting up configuration file in ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone."
-mkdir ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
-cp ./working/wildfly.conf ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
+printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/standalone."
+mkdir ${wildfly_home}/bin/standalone
+cp ./working/wildfly.conf ${wildfly_home}/bin/standalone
 
-printf " %s\n" "Completed setting up ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone."
+printf " %s\n" "Completed setting up ${wildfly_home}/bin/standalone."
 
 
 
