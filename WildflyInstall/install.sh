@@ -103,11 +103,18 @@ for file in `ls ./working`; do
 
 	printf " %s\n" "Updating ${file_loc}..."
 
+	# General replacements
 	replaceVar "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
 	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-	
+
+	# Vault replacements
+	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
+	replaceVar "{{MASKED_VAULT_PASSWORD}}" "${vault_pass}" "$file_loc"
+	replaceVar "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
+	replaceVar "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
+	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
 done
 
 printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/standalone."
