@@ -22,5 +22,9 @@ batch
 
 ### Configure keystore
 
+### Create / configure vault
+/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORRD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
+
+
 
 run-batch
