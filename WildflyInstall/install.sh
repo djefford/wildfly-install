@@ -71,6 +71,8 @@ printf " %s\n" "Configuring vault."
 echo $divider ; sleep 2
 
 
+# Verify input and capture masked password.
+output=`vaultAddItem "/opt/software/wildfly-8.2.0" "/opt/software/wildfly-8.2.0/vault" "/opt/software/wildfly-8.2.0/ssl/vault.jks" "changeit" "12345678" "vault" "100" "attribute1" "block1" "password1" "add" | grep -o "\"MASK-.*\""`
 
 
 # Substitue variables and configure wildfly.
