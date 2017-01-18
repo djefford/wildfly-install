@@ -71,12 +71,22 @@ echo $divider
 printf " %s\n" "Configuring vault."
 echo $divider ; sleep 2
 
-vaultAddItem 
+# Read in vault password.
+read -s -p " Please provide vault keystore password: " vault_pass
+printf "\n"
+echo $divider
+read -s -p " Please provide java keystore password: " keystore_pass
+
+# Add default keystore information to vault.
+vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
 
 
 # Verify input and capture masked password.
-masked=`vaultAddItem "/opt/software/wildfly-8.2.0" "/opt/software/wildfly-8.2.0/vault" "/opt/software/wildfly-8.2.0/ssl/vault.jks" "changeit" "12345678" "vault" "100" "attribute1" "block1" "password1" "add" | grep -o "\"MASK-.*\""`
+printf " %s\n" "Verifying attribute exists in vault."
+masked=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
 
+
+echo $divider
 
 # Substitue variables and configure wildfly.
 printf " %s\n" "Updating configuration files with custom variables."
