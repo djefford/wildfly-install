@@ -45,7 +45,7 @@ printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
 echo $divider ; sleep 2
 
 # InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
-#installWildfly $MAIN_MEDIA $SOFTWARE_HOME
+installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
 
@@ -66,5 +66,31 @@ genKeystore vault.jks vault ${SOFTWARE_HOME}/${wildfly_home}/ssl
 
 echo $divider
 
+# Substitue variables and configure wildfly.
+printf " %s\n" "Updating configuration files with custom variables."
+echo $divider ; sleep 2
 
+printf " %s\n" "Moving ${INSTALL_TYPE} files to working directory..."
+echo $divider ; sleep 2
+
+cp -r ./${INSTALL_TYPE} ./working
+
+for file in `ls ./working`; do
+
+	file_loc="./working/$file"
+
+	printf " %s\n" "Updating ${file_loc}..."
+
+	replaceVar "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
+	replaceVar "{{WILDFLY_HOME}}" "${SOFTWARE_HOME}/${wildfly_home}" "$file_loc"
+	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
+	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+	
+done
+
+printf " %s\n" "Setting up configuration file in ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone."
+mkdir ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
+cp ./working/wildfly.conf ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
+
+printf " %s\n" "Completed setting up ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone."
 
