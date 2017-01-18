@@ -4,7 +4,7 @@
 # Format for printf output
 outformat=" %s\t%s %s\n"
 
-# Function:		Escapes special characters in a variable.
+# Function:	Escapes special characters in a variable.
 # Arguments:	Variable to escape
 escapevar() {
 
@@ -18,7 +18,7 @@ escapevar() {
 }
 
 
-# Function: 	Create default directory structure.
+# Function: Create default directory structure.
 # Arguments: 	List of directories to be created.
 createDirectoryStructure () {
 
@@ -46,7 +46,7 @@ createDirectoryStructure () {
 }
 
 
-# Function: 	Verify Java Installation
+# Function: Verify Java Installation
 # Arguments: 	JAVA_HOME (ex. /usr/bin/java)
 verifyJava () {
 
@@ -72,7 +72,7 @@ verifyJava () {
 }
 
 
-# Function: 	Install Wildfly
+# Function: Install Wildfly
 # Arguments: 	MAIN_MEDIA (ex. /opt/media/wildfly-8.2.0.Final.zip)i, SOFTWARE_HOME 
 # 				(ex. $HOME_DIR/software)
 installWildfly () {
@@ -119,7 +119,7 @@ installWildfly () {
 }
 
 
-# Function:		Escape and replace custom variables
+# Function:	Escape and replace custom variables
 # Arguments:	Variable to be replaced, New string, file to udpate
 replaceVar() {
 
@@ -133,7 +133,7 @@ replaceVar() {
 }
 
 
-# Function:		Generates a keystore w/ self-signed certificate, if keystore exists, skips creating
+# Function:	Generates a keystore w/ self-signed certificate, if keystore exists, skips creating
 # 				new keystore.
 # Arguments:	keystore name, cert alias (ex. hostname), output directory (ex. /opt/wildfly/ssl)
 genKeystore () {
@@ -184,28 +184,42 @@ genKeystore () {
 }
 
 
-# Function:		Add value to vault.
-# Arguments:	WILDFLY HOME, Encrypted file directory, keystore url, keystore password, salt, keystore alias,
+# Function:	Add value to vault.
+# Arguments:WILDFLY HOME, Encrypted file directory, keystore url, keystore password, salt, keystore alias,
 #				iteration count, attribute name, vault block, secured value (password), 'add' or 'check'
 vaultAddItem () {
 
+	# argument list
+	args=()
+
+	if [ "$#" -ne 11 ]; then
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Illegal number of arguments passed."
+		#exit 1
+	else
+		until [ -z "$1" ]; do
+			args+=($1)
+			shift	
+		done
+	fi
+
+
 	# Map variables
-	wildfly_home=$1
-	enc_file_dir=$2
-	url=$3
-	pass=$4
-	salt=$5
-	key_alias=$6
-	iteration=$7
-	attribute=$8
-	block=$9
-	sec_value=${10}
-	add_or_check=${11}
+	wildfly_home=${args[0]}
+	enc_file_dir=${args[1]}
+	url=${args[2]}
+	pass=${args[3]}
+	salt=${args[4]}
+	key_alias=${args[5]}
+	iteration=${args[6]}
+	attribute=${args[7]}
+	block=${args[8]}
+	sec_value=${args[9]}
+	add_or_check=${args[10]}
 
 	# Verify vault.sh script
 	if [ ! -f $wildfly_home/bin/vault.sh ]; then
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${wildfly_home}/bin/vault.sh."
-		exit 1
+		#exit 1
 	fi
 
 	if [ "$add_or_check" == "add" ]; then
@@ -223,11 +237,11 @@ vaultAddItem () {
 
 	fi
 
-	if [ ${rc} == 0 ]; then
+	if [ "${rc}" = 0 ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Vault process completed successfully."
 	else
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Vault process did not complete successfully."
-		exit 1
+		#exit 1
 	fi
 
 }
