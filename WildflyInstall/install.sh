@@ -66,6 +66,13 @@ genKeystore vault.jks vault ${SOFTWARE_HOME}/${wildfly_home}/ssl
 
 echo $divider
 
+# Configure Vault.
+printf " %s\n" "Configuring vault."
+echo $divider ; sleep 2
+
+
+
+
 # Substitue variables and configure wildfly.
 printf " %s\n" "Updating configuration files with custom variables."
 echo $divider ; sleep 2
@@ -93,4 +100,6 @@ mkdir ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
 cp ./working/wildfly.conf ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone
 
 printf " %s\n" "Completed setting up ${SOFTWARE_HOME}/${wildfly_home}/bin/standalone."
+
+
 
