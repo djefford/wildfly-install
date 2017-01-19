@@ -247,3 +247,45 @@ vaultAddItem () {
 }
 
 
+
+# Function:	Place scripts appropriately
+# Arguments:	Initial script directory, target script directory
+placeScripts() {
+
+	# Grab variables
+	script_dir=$1
+	target_dir=$2
+
+	if [ ! -d $script_dir ]; then
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${script_dir}."
+		exit 1
+	fi
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "Placing crontabs in ${target_dir}."
+
+	if [ -d $target_dir ] ; then
+
+		printf "$outformat" "${FUNCNAME}:" "W:" "$target_dir already exists, skipping creation."
+
+	else
+		printf "$outformat" "${FUNCNAME}:" "W:" "Unable to locate ${target_dir}. Creating."
+		mkdir -p $target_dir ; rc=$?
+
+		if [ "${rc}" = 0 ]; then
+			printf "$outformat" "${FUNCNAME}:" "I:" "Successfully created ${target_dir}."
+		else
+			printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to create ${target_dir}."
+		fi
+	fi
+		
+	# Copy scripts to target location
+	cp $script_dir/* $target_dir ; rc=$?
+
+	if [ "${rc}" != 0 ]; then
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to place script at ${target_dir}."
+		exit 1
+	fi
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "${FUNCNAME} completed successfully."
+
+}
