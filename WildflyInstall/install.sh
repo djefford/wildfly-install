@@ -95,8 +95,11 @@ echo $divider ; sleep 2
 printf " %s\n" "Moving ${INSTALL_TYPE} files to working directory..."
 echo $divider ; sleep 2
 
+# Move configuration files and cli script to working directory
+# This preserves the original files for future use or comparison.
 cp -r ./${INSTALL_TYPE} ./working
 
+# Replace variables in cli and conf templates
 for file in `ls ./working`; do
 
 	file_loc="./working/$file"
@@ -123,5 +126,37 @@ cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
 
 printf " %s\n" "Completed setting up ${wildfly_home}/bin/${INSTALL_TYPE}."
 
+echo $divider
 
+# Update and move scripts.
+printf " %s\n" "Updating script files."
+echo $divider ; sleep 2
+
+printf " %s\n" "Moving script files to working_scripts directory..."
+echo $divider ; sleep 2
+
+# Move scripts to working_scripts directory
+cp -r ./scripts ./working_scripts
+
+# Replace variables
+for file in `ls ./working_scripts` ; do
+
+	file_loc="./working_scripts/$file"
+
+	printf " %s\n" "Updating ${file_loc}..."
+
+	# General replacements
+	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
+	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
+	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
+
+done
+
+printf " %s\n" "Setting up script files in ${ADMIN_HOME}/scripts."
+placeScripts ./working_scripts ${ADMIN_HOME}/scripts
+
+printf " %s\n" "Completed setting up script files in ${ADMIN_HOME}/scripts."
+
+echo $divider
 
