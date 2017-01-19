@@ -3,6 +3,8 @@ HOME_DIR="/opt"
 LOGS_DIR="/opt/logs"
 DEV_HOME="/od"
 
+ADMIN_HOME="/opt/admin"
+
 SOFTWARE_HOME="${HOME_DIR}/software"
 
 MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
@@ -11,6 +13,7 @@ HOSTNAME="app1.mustin.vm"
 
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 WILDFLY_USER="wildfly"
+ADMIN_GROUP="wheel"
 
 # Installation type, either 'standalone','domain_master', 'domain_slave'
 INSTALL_TYPE="standalone"
