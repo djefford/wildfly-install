@@ -117,11 +117,11 @@ for file in `ls ./working`; do
 	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
 done
 
-printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/standalone."
-mkdir ${wildfly_home}/bin/standalone
-cp ./working/wildfly.conf ${wildfly_home}/bin/standalone
+printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
+mkdir ${wildfly_home}/bin/${INSTALL_TYPE}
+cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
 
-printf " %s\n" "Completed setting up ${wildfly_home}/bin/standalone."
+printf " %s\n" "Completed setting up ${wildfly_home}/bin/${INSTALL_TYPE}."
 
 
 
