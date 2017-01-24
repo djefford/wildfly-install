@@ -24,8 +24,11 @@ batch
 /core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
 
 ### Configure ManagementRealm
-/core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="app1.mustin.vm", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols="TLSv1.2")
+/core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="{{HOSTNAME}}", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols="TLSv1.2")
 
+/core-service=management/ldap-connection=ldaps_admin_connection:add(search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}",url="{{LDAP_URL}}",search-dn="{{SEARCH_DN}}")
+/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()
+/core-service=management/security-realm=ManagementRealm/authentication=ldap:add(base-dn="{{BASE_DN}}", recursive=true, advanced-filter="(&({{NAME_ATTRIBUTE}})(memberOf={{ADMIN_GROUP_DN}}))", connection="ldaps_admin_connection")
 
 
 run-batch
