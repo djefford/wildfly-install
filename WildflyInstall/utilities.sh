@@ -131,6 +131,7 @@ patchWildfly () {
 		printf "$outformat" "${FUNCNAME}:" "I:" "Patching with ${home}/bin/jboss-cli.sh."
 	else
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${home}."
+		exit 1
 	fi
 
 	${home}/bin/jboss-cli.sh "patch apply --override-all ${2}" ; rc=$?
@@ -139,6 +140,7 @@ patchWildfly () {
 		printf "$outformat" "${FUNCNAME}:" "I:" "$2 patch applied successfully."
 	else
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Patch not applied."
+		exit 1
 	fi
 
 }
@@ -244,7 +246,7 @@ vaultAddItem () {
 	# Verify vault.sh script
 	if [ ! -f $wildfly_home/bin/vault.sh ]; then
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${wildfly_home}/bin/vault.sh."
-		#exit 1
+		exit 1
 	fi
 
 	if [ "$add_or_check" == "add" ]; then
@@ -266,7 +268,7 @@ vaultAddItem () {
 		printf "$outformat" "${FUNCNAME}:" "I:" "Vault process completed successfully."
 	else
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Vault process did not complete successfully."
-		#exit 1
+		exit 1
 	fi
 
 }
