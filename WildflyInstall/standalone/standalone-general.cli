@@ -45,5 +45,4 @@ batch
 /core-service=management/access=authorization/role-mapping=Administrator/include={{ADMIN_GROUP}}:add(name={{ADMIN_GROUP}}, type=GROUP)
 
 
-
 run-batch
