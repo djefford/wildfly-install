@@ -119,6 +119,31 @@ installWildfly () {
 }
 
 
+# Function:	Patch Wildfly 
+# Arguments:	Wildfly Home, FQDN patch
+patchWildfly () {
+
+	home=$1
+	hostname=`hostname -f`
+
+	# Check for wildfly home directory.
+	if [ -d $home ]; then
+		printf "$outformat" "${FUNCNAME}:" "I:" "Patching with ${home}/bin/jboss-cli.sh."
+	else
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to locate ${home}."
+	fi
+
+	${home}/bin/jboss-cli.sh "patch apply --override-all ${2}" ; rc=$?
+
+	if [ "$rc" = 0 ]; then
+		printf "$outformat" "${FUNCNAME}:" "I:" "$2 patch applied successfully."
+	else
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Patch not applied."
+	fi
+
+}
+
+
 # Function:	Escape and replace custom variables
 # Arguments:	Variable to be replaced, New string, file to udpate
 replaceVar() {
