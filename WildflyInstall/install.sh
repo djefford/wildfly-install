@@ -49,9 +49,22 @@ installWildfly $MAIN_MEDIA $SOFTWARE_HOME
 
 echo $divider
 
-
 wildfly_dir=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly directory
 wildfly_home=${SOFTWARE_HOME}/${wildfly_dir}								# Wildfly Home, full path
+
+# Apply optional patches
+printf " %s\n" "Patching Wildfly."
+echo $divider ; sleep 2
+
+if [ ${#PATCH_LIST[@]} -gt 0 ]; then
+	for patch in $PATCH_LIST; do
+		patchWildfly $wildfly_home $patch
+	done
+else
+	printf " %s\n" "No patches found. Skipping." ; sleep 2
+fi
+
+echo $divider
 
 # Create SSL vaults - keystore.jks, and vault.jks
 printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
