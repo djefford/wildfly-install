@@ -111,6 +111,7 @@ for file in `ls ./working`; do
 	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+	replaceVar "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
 
 	# Vault replacements
 	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
@@ -118,6 +119,8 @@ for file in `ls ./working`; do
 	replaceVar "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
 	replaceVar "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
 	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
+
+	# LDAP replacements
 done
 
 printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
