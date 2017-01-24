@@ -15,6 +15,9 @@ JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 WILDFLY_USER="wildfly"
 ADMIN_GROUP="wheel"
 
+# (Optional) Patch List
+PATCH_LIST=()
+
 # Installation type, either 'standalone','domain_master', 'domain_slave'
 INSTALL_TYPE="standalone"
 
