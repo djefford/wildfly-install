@@ -19,7 +19,11 @@ ADMIN_GROUP="wheel"
 INSTALL_TYPE="standalone"
 
 ### LDAP related configurations
-ADMIN_GROUP=""
+LDAP_URL="ldaps://support1.mustin.vm:636"
+ADMIN_GROUP="wildfly_admins"
+ADMIN_GROUP_DN="cn=wildfly_admins,cn=groups,cn=compat,dc=mustin,dc=vm"
+SEARCH_DN=""
+
 
 
 # Vault related information
