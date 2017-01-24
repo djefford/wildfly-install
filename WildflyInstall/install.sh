@@ -121,6 +121,12 @@ for file in `ls ./working`; do
 	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
 
 	# LDAP replacements
+	replaceVar "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
+	replaceVar "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
+	replaceVar "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
+	replaceVar "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
+	replaceVar "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
+	replaceVar "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
 done
 
 printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
