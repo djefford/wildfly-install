@@ -20,10 +20,11 @@ batch
 # /socket-binding-group=standard-sockets/socket-binding=management-https:undefine-attribute(name=port)
 # /socket-binding-group=standard-sockets/socket-binding=management-http:undefine-attribute(name=port)
 
-### Configure keystore
-
 ### Create / configure vault
 /core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
+
+### Configure ManagementRealm
+/core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="app1.mustin.vm", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols="TLSv1.2")
 
 
 
