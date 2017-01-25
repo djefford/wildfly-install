@@ -97,7 +97,7 @@ vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_hom
 
 # Verify input and capture masked password.
 printf " %s\n" "Verifying attribute exists in vault."
-masked=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
+masked_pass=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
 
 
 echo $divider
@@ -129,7 +129,7 @@ for file in `ls ./working`; do
 
 	# Vault replacements
 	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
-	replaceVar "{{MASKED_VAULT_PASSWORD}}" "${vault_pass}" "$file_loc"
+	replaceVar "{{MASKED_VAULT_PASSWORD}}" "${masked_pass}" "$file_loc"
 	replaceVar "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
 	replaceVar "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
 	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
