@@ -192,13 +192,29 @@ ${ADMIN_HOME}/scripts/wildflyPerms.sh
 
 echo $divider
 
-# Start JBoss, in preparation to run the CLI scripts
+# Start Wildfly, in preparation to run the CLI scripts
 printf " %s\n" "Starting JBoss..."
 echo $divider ; sleep 2
 
-startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE}
+startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE} ; rc=$?
+
+if [ $rc -eq 0 ] ; then
+	print " %s\n" "Unable to start Wildfly."
+fi
 
 echo $divider
+
+# Apply CLI scripts
+printf " %s\n" "Applying CLI scripts."
+echo $divider ; sleep 2
+
+for file in `ls ./working/*.cli`; do
+
+	file_loc="./working/$file"
+
+	executeCLI $wildfly_home $file_loc
+
+done
 
 
 
