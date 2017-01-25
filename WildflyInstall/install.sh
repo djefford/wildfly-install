@@ -99,6 +99,7 @@ vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_hom
 printf " %s\n" "Verifying attribute exists in vault."
 masked_pass=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
 
+masked_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$masked_pass")
 
 echo $divider
 
@@ -198,8 +199,8 @@ echo $divider ; sleep 2
 
 startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE} ; rc=$?
 
-if [ $rc -eq 0 ] ; then
-	print " %s\n" "Unable to start Wildfly."
+if [ "$rc" != 0 ] ; then
+	printf " %s\n" "Unable to start Wildfly."
 fi
 
 echo $divider
