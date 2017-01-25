@@ -335,3 +335,25 @@ startWildfly () {
 	${start_script} start
 
 }
+
+
+# Function: Execute CLI script
+# Arguments:	Wildfly home, script
+executeCLI() {
+
+	home=$1
+	script=$2
+	hostname=`hostname -f`
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "Executing ${script}."
+
+	${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 ; rc=#?
+
+	if [ $rc -eq 0 ]; then
+		print "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
+		exit 1
+	fi
+
+	printf "$outformat" "${FUNCNAME}:" "I:" "Completed exeuction of ${script}."
+
+}
