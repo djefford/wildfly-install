@@ -56,6 +56,7 @@ wildfly_home=${SOFTWARE_HOME}/${wildfly_dir}								# Wildfly Home, full path
 printf " %s\n" "Patching Wildfly."
 echo $divider ; sleep 2
 
+# Loop over patch list and install each patch.
 if [ ${#PATCH_LIST[@]} -gt 0 ]; then
 	for patch in $PATCH_LIST; do
 		patchWildfly $wildfly_home $patch
