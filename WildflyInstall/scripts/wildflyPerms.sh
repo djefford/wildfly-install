@@ -11,7 +11,7 @@
 ############################################################
 
 WILDFLY_HOME={{WILDFLY_HOME}}
-LOG_ROOT={{LOGS_DIR}}/wildfly
+LOG_ROOT={{LOGS_DIR}}
 WILDFLY_USER={{WILDFLY_USER}}
 ADMIN_GROUP={{ADMIN_GROUP}}
 

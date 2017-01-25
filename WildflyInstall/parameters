@@ -1,6 +1,6 @@
 #### Variables for the install.sh script.
 HOME_DIR="/opt"
-LOGS_DIR="/opt/logs"
+LOGS_DIR="/opt/logs/wildfly"
 DEV_HOME="/od"
 
 ADMIN_HOME="/opt/admin"
