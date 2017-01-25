@@ -347,7 +347,7 @@ executeCLI() {
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Executing ${script}."
 
-	${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 ; rc=#?
+	${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=#?
 
 	if [ $rc -eq 0 ]; then
 		print "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
