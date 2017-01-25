@@ -316,3 +316,22 @@ placeScripts() {
 	printf "$outformat" "${FUNCNAME}:" "I:" "${FUNCNAME} completed successfully."
 
 }
+
+
+# Function:	Start Wildfly
+# Arguments: Wildfly Home, Start-up Script, Install Type (standalone, domain)
+startWildfly () {
+
+	home=$1
+	start_script=$2
+	inst_type=$3
+
+	if [ ! -d $home ]; then
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Could not locate Wildfly home at ${home}."
+		exit 1
+	fi
+
+	export JBOSS_CONF=${home}/bin/${inst_type}/wildfly.conf
+	${start_script} start
+
+}
