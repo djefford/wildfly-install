@@ -188,11 +188,7 @@ echo $divider
 printf " %s\n" "Updating permissions..."
 echo $divider ; sleep 2
 
-${ADMIN_HOME}/scripts/wildflyPerms.sh ; rc=$?
-if [ $rc -eq 0 ]; then
-	printf " %s\n" "Failed to update permissions."
-	exit
-fi
+${ADMIN_HOME}/scripts/wildflyPerms.sh
 
 echo $divider
 
@@ -201,6 +197,8 @@ printf " %s\n" "Starting JBoss..."
 echo $divider ; sleep 2
 
 startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE}
+
+echo $divider
 
 
 
