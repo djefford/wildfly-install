@@ -349,7 +349,7 @@ executeCLI() {
 
 	${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=#?
 
-	if [ $rc -eq 0 ]; then
+	if [ "$rc" = 0 ]; then
 		print "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
 		exit 1
 	fi
