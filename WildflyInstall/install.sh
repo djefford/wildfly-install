@@ -173,6 +173,7 @@ for file in `ls ./working_scripts` ; do
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
+	replaceVar "{{INSTANCE_TYPE}}" "$INSTANCE_TYPE" "$file_loc"
 
 done
 
@@ -182,4 +183,24 @@ placeScripts ./working_scripts ${ADMIN_HOME}/scripts
 printf " %s\n" "Completed setting up script files in ${ADMIN_HOME}/scripts."
 
 echo $divider
+
+# Running permissions script
+printf " %s\n" "Updating permissions..."
+echo $divider ; sleep 2
+
+${ADMIN_HOME}/scripts/wildflyPerms.sh ; rc=$?
+if [ $rc -eq 0 ]; then
+	printf " %s\n" "Failed to update permissions."
+	exit
+fi
+
+echo $divider
+
+# Start JBoss, in preparation to run the CLI scripts
+printf " %s\n" "Starting JBoss..."
+echo $divider ; sleep 2
+
+startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE}
+
+
 
