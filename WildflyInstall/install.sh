@@ -208,9 +208,7 @@ echo $divider
 printf " %s\n" "Applying CLI scripts."
 echo $divider ; sleep 2
 
-for file in `ls ./working/*.cli`; do
-
-	file_loc="./working/$file"
+for file_loc in `ls ./working/*.cli`; do
 
 	executeCLI $wildfly_home $file_loc
 
