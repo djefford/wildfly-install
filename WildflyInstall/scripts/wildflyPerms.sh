@@ -31,7 +31,7 @@ if [ -d "$WILDFLY_HOME" ] && [ -d "$LOG_ROOT" ] ; then
 	# Set script permissions
 	chmod -R ugo-w $WILDFLY_HOME/bin
 	find $WILDFLY_HOME/bin -name "*.sh" | xargs chmod ug+x
-	find $WILDFLY_HOME/bin -type d -name "[standalone|domain]" | xargs chmod -R ug+w
+	find $WILDFLY_HOME/bin -type d -name "{{INSTANCE_TYPE}}" | xargs chmod -R ug+w
 	
 	# Set vault permissions to allow admin group to write
 	if [ "$(ls -A $WILDFLY_HOME)" ] ; then
