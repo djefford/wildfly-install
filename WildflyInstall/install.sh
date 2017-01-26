@@ -94,6 +94,14 @@ read -s -p " Please provide java keystore password: " keystore_pass
 # Add default keystore information to vault.
 vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
 
+# Read in ldap password.
+echo $divider
+read -s -p " Please provide ldap bind account password: " ldap_pass
+printf "\n"
+
+# Add LDAP Bind account password to the vault.
+vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT ldapAuthPwd ldapAuth $ldap_pass add
+
 
 # Verify input and capture masked password.
 printf " %s\n" "Verifying attribute exists in vault."
