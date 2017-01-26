@@ -223,5 +223,14 @@ for file_loc in `ls ./working/*.cli`; do
 
 done
 
+# Stop Wildfly and finish the script
+printf " %s\n" "Stopping wildfly..."
+echo $divider ; sleep 2
+
+executeCLI $wildfly_home "command" "shutdown"
+
+printf " %s\n" "Script completed successfully."
+echo $divider
+
 
 
