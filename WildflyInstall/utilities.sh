@@ -353,11 +353,11 @@ executeCLI() {
 		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=#?
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
-		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9999 --command="${script}"
+		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}"
 	fi
 
 	if [ "$rc" = 0 ]; then
-		print "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
+		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
 		exit 1
 	fi
 
