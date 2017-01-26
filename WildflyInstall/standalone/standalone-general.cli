@@ -27,7 +27,6 @@ batch
 /core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="{{HOSTNAME}}", keystore-path="ssl/keystore.jks", keystore-relative-to="${jboss.home.dir}", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols=["TLSv1.2"])
 
 /core-service=management/ldap-connection=ldaps_admin_connection:add(search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}",url="{{LDAP_URL}}",search-dn="{{LDAP_BIND_DN}}")
-/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()
 /core-service=management/security-realm=ManagementRealm/authentication=ldap:add(base-dn="{{LDAP_BASE_DN}}", recursive=true, advanced-filter="(&({{LDAP_NAME_ATTRIBUTE}})(memberOf={{LDAP_ADMIN_GROUP_DN}}))", connection="ldaps_admin_connection")
 
 ### Configure Management Interface
