@@ -338,16 +338,23 @@ startWildfly () {
 
 
 # Function: Execute CLI script
-# Arguments:	Wildfly home, script
+# Arguments:	Wildfly home, batch or command, script or full command to execute
 executeCLI() {
 
 	home=$1
-	script=$2
+	option=$2
+	script=$3
 	hostname=`hostname -f`
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Executing ${script}."
 
-	${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=#?
+	if [ "$option" = "batch" ]; then
+		printf "$outformat" "${FUNCNAME}:" "I:" "Executing batch script: ${script}."
+		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=#?
+	else
+		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
+		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9999 --command="${script}"
+	fi
 
 	if [ "$rc" = 0 ]; then
 		print "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
