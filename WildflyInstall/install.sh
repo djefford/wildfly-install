@@ -209,9 +209,12 @@ echo $divider
 printf " %s\n" "Applying CLI scripts."
 echo $divider ; sleep 2
 
+# Prep for script execution
+executeCLI $wildfly_home "command" "/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()"
+
 for file_loc in `ls ./working/*.cli`; do
 
-	executeCLI $wildfly_home $file_loc
+	executeCLI $wildfly_home "batch" $file_loc
 
 done
 
