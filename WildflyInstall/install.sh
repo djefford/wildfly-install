@@ -212,6 +212,9 @@ echo $divider ; sleep 2
 # Prep for script execution
 executeCLI $wildfly_home "command" "/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()"
 
+# Restart Wildfly to remove properties.
+executeCLI $wildfly_home "command" "shutdown --restart=true"
+
 for file_loc in `ls ./working/*.cli`; do
 
 	executeCLI $wildfly_home "batch" $file_loc
