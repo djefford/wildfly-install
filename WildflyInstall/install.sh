@@ -194,7 +194,7 @@ ${ADMIN_HOME}/scripts/wildflyPerms.sh
 echo $divider
 
 # Start Wildfly, in preparation to run the CLI scripts
-printf " %s\n" "Starting JBoss..."
+printf " %s\n" "Starting Wildfly..."
 echo $divider ; sleep 2
 
 startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE} ; rc=$?
