@@ -7,7 +7,7 @@ Type=oneshot
 EnvironmentFile={{WILDFLY_HOME}}/bin/%I/wildfly.conf
 ExecStart={{ADMIN_HOME}}/scripts/wildfly-init.sh start
 ExecStop={{ADMIN_HOME}}/scripts/wildfly-init.sh stop
-RemainAfterExit=yes
+SuccessExitStatus=143
 
 [Install]
 WantedBy=multi-user.target
