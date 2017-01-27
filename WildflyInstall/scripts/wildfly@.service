@@ -1,0 +1,13 @@
+[Unit]
+Description=Wildfly Standalone Startup Script
+After=network.target
+
+[Service]
+Type=oneshot
+EnvironmentFile={{WILDFLY_HOME}}/bin/%I/wildfly.conf
+ExecStart={{ADMIN_HOME}}/scripts/wildfly-init.sh start
+ExecStop={{ADMIN_HOME}}/scripts/wildfly-init.sh stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
