@@ -7,7 +7,7 @@
 #
 ############################################################
 
-source ./utilities
+source ./parameters
 
 # check for and remove Wildfly Home
 wildfly_home=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")
