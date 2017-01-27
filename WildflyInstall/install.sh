@@ -183,6 +183,7 @@ for file in `ls ./working_scripts` ; do
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
 	replaceVar "{{INSTANCE_TYPE}}" "$INSTANCE_TYPE" "$file_loc"
+	replaceVar "{{ADMIN_HOME}}" "$ADMIN_HOME" "$file_loc"
 
 done
 
