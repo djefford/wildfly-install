@@ -9,7 +9,8 @@ batch
 ### Remove example configurations
 /subsystem=datasources/data-source=ExampleDS:remove()
 
-## Need to add in values to secure undertow
+### Disable welcome web application
+/subsystem=undertow/server=default-server/host=default-host/location=\/:remove
 
 ### Create mail provider and update socket bindings
 /subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
