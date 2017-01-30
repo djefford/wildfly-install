@@ -1,6 +1,6 @@
 [Unit]
 Description=Wildfly Standalone Startup Script
-After=network.target
+After=syslog.target network.target
 
 [Service]
 Type=oneshot
