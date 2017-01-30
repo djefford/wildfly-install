@@ -11,7 +11,11 @@ source ./parameters
 
 # check for and remove Wildfly Home
 wildfly_home=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")
-wildfly_home=${SOFTWARE_HOME}/${wildfly_home}
+if [ ! -z ${wildfly_home} ]; then
+	wildfly_home=${SOFTWARE_HOME}/${wildfly_home}
+else
+	wildfly_home=${SOFTWARE_HOME}/wildfly
+fi
 
 if [ -d ${wildfly_home} ]; then
 	printf " %s\n" "Removing ${wildfly_home}."
@@ -33,7 +37,7 @@ if [ -d ./working ]; then
 	printf " %s\n" "Removing ./working."
 	rm -rf ./working
 else
-	printf "%s\n" "Unable to locate ./working."
+	printf " %s\n" "Unable to locate ./working."
 fi
 
 if [ -d ./working_scripts ]; then
