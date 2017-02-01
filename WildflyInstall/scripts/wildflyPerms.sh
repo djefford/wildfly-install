@@ -31,6 +31,8 @@ if [ -d "$WILDFLY_HOME" ] && [ -d "$LOG_ROOT" ] ; then
 	# Set script permissions
 	chmod -R ugo-w $WILDFLY_HOME/bin
 	find $WILDFLY_HOME/bin -name "*.sh" | xargs chmod ug+x
+
+	# Add additional lines below if more standalone instances are configured
 	find $WILDFLY_HOME/bin -type d -name "{{INSTANCE_TYPE}}" | xargs chmod -R ug+w
 	
 	# Set vault permissions to allow admin group to write
