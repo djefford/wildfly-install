@@ -1,47 +1,62 @@
 batch
 
-/host=master:write-attribute(name=name,value="{{NODE_NAME}}")
+/host=master:write-attribute(name=name,value="{{SHORT_HOSTNAME}}")
 /host=master:reload
 
 ### Configure default JVM server.log location
 /profile=default/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
+/profile=full/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
+/profile=full-ha/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
+/profile=ha/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
 
 ### Remove example configurations
 /profile=default/subsystem=datasources/data-source=ExampleDS:remove()
+/profile=full/subsystem=datasources/data-source=ExampleDS:remove()
+/profile=full-ha/subsystem=datasources/data-source=ExampleDS:remove()
+/profile=ha/subsystem=datasources/data-source=ExampleDS:remove()
+
+
+
 
 ### Create mail provider and update socket bindings
 /profile=default/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
-/profile=default/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
-/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/profile=full/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+/profile=full-ha/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+/profile=ha/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
 
-# Disable web admin management interface
-# /socket-binding-group=standard-sockets/socket-binding=management-https:undefine-attribute(name=port)
-/socket-binding-group=standard-sockets/socket-binding=management-http:undefine-attribute(name=port)
+/profile=default/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+/profile=full/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+/profile=full-ha/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+/profile=ha/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+
+/host={{SHORT_HOSTNAME}}/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/host={{SHORT_HOSTNAME}}/socket-binding-group=full-ha-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/host={{SHORT_HOSTNAME}}/socket-binding-group=full-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/host={{SHORT_HOSTNAME}}/socket-binding-group=ha-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+
 
 ### Create / configure vault
-/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
+/host={{SHORT_HOSTNAME}}/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
 
 ### Configure ManagementRealm
-/core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="{{HOSTNAME}}", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols=["TLSv1.2"])
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="{{HOSTNAME}}", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols=["TLSv1.2"])
 
-/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()
-/core-service=management/ldap-connection=ldaps_admin_connection:add(search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}",url="{{LDAP_URL}}",search-dn="{{LDAP_BIND_DN}}")
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()
+/host={{SHORT_HOSTNAME}}/core-service=management/ldap-connection=ldaps_admin_connection:add(search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}",url="{{LDAP_URL}}",search-dn="{{LDAP_BIND_DN}}")
 /core-service=management/security-realm=ManagementRealm/authentication=ldap:add(base-dn="{{LDAP_BASE_DN}}", recursive=true, advanced-filter="(&({{LDAP_NAME_ATTRIBUTE}})(memberOf={{LDAP_ADMIN_GROUP_DN}}))", connection="ldaps_admin_connection")
 
-### Configure Management Interface
-/core-service=management/management-interface=http-interface:write-attribute(name=secure-port, value=9443)
 
 ### Configure RBAC
-/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
-/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap:add(connection="ldaps_admin_connection")
-/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add(group-attribute="memberOf",iterative=true,group-dn-attribute="dn", group-name="SIMPLE",group-name-attribute="cn")
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap:add(connection="ldaps_admin_connection")
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add(group-attribute="memberOf",iterative=true,group-dn-attribute="dn", group-name="SIMPLE",group-name-attribute="cn")
 
-/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm:write-attribute(name=map-groups-to-roles, value=true)
-/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute(name=skip-group-loading,value=true)
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm:write-attribute(name=map-groups-to-roles, value=true)
+/host={{SHORT_HOSTNAME}}/core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute(name=skip-group-loading,value=true)
 
-/host={{NODE_NAME}}/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
-/host={{NODE_NAME}}/core-service=management/access=authorization/role-mapping=Administrator:add
-/host={{NODE_NAME}}/core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
+/host={{SHORT_HOSTNAME}}/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
+/host={{SHORT_HOSTNAME}}/core-service=management/access=authorization/role-mapping=Administrator:add
+/host={{SHORT_HOSTNAME}}/core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
 
 
 run-batch
