@@ -151,6 +151,10 @@ for file in `ls ./working`; do
 	replaceVar "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
 	replaceVar "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
 	replaceVar "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
+
+	# Domain Install replacements
+	replaceVar "{{SHORT_HOSTNAME}}" "$SHORT_HOSTNAME" "$file_loc"
+
 done
 
 printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
