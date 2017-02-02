@@ -338,22 +338,33 @@ startWildfly () {
 
 
 # Function: Execute CLI script
-# Arguments:	Wildfly home, batch or command, script or full command to execute
+# Arguments:	Wildfly home, batch or command, script or full command to execute, standalone or domain
 executeCLI() {
 
 	home=$1
 	option=$2
 	script=$3
+	insttype=$4
 	hostname=`hostname -f`
+
+	if [ $insttype = "standalone" ]; then
+		cmd="${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990"
+	elif [ $insttype = "domain" ]; then
+		cmd="${home}/bin/jboss-cli.sh -c"
+	fi
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Executing ${script}."
 
 	if [ "$option" = "batch" ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing batch script: ${script}."
-		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=$?
+		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=$?
+		echo "$cmd --file=${script} "
+		$cmd --file=${script} ; rc=$?
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
-		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
+		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
+		echo "$cmd --file=${script} "
+		$cmd --file=${script} ; rc=$?
 	fi
 
 	if [ "$rc" != 0 ]; then
