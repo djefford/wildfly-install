@@ -1,18 +1,15 @@
 batch
 
-### Set Default Name for initial standalone installation.
-:write-attribute(name=name,value="default-standalone")
-
 ### Configure default JVM server.log location
-/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
+/profile=default/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
 
 ### Remove example configurations
-/subsystem=datasources/data-source=ExampleDS:remove()
+/profile=default/subsystem=datasources/data-source=ExampleDS:remove()
 
 ### Create mail provider and update socket bindings
-/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
-/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
-/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/profile=default/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
+/profile=default/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
+/profile=default/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
 
 # Disable web admin management interface
 # /socket-binding-group=standard-sockets/socket-binding=management-https:undefine-attribute(name=port)
