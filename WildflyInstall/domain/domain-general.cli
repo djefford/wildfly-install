@@ -9,7 +9,7 @@ batch
 ### Create mail provider and update socket bindings
 /profile=default/subsystem=mail/mail-session="java:mail/mail_01":add(jndi-name="java:/mail/mail_01")
 /profile=default/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
-/profile=default/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=mail-smtp:write-attribute(name="host", value="{{SMTP_SERVER}}")
 
 # Disable web admin management interface
 # /socket-binding-group=standard-sockets/socket-binding=management-https:undefine-attribute(name=port)
