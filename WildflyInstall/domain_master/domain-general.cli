@@ -1,5 +1,8 @@
 batch
 
+/host=master:write-attribute(name=name,value="{{NODE_NAME}}")
+/host=master:reload
+
 ### Configure default JVM server.log location
 /profile=default/subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
 
@@ -29,16 +32,16 @@ batch
 /core-service=management/management-interface=http-interface:write-attribute(name=secure-port, value=9443)
 
 ### Configure RBAC
-/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
-/core-service=management/security-realm=ManagementRealm/authorization=ldap:add(connection="ldaps_admin_connection")
-/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add(group-attribute="memberOf",iterative=true,group-dn-attribute="dn", group-name="SIMPLE",group-name-attribute="cn")
+/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
+/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap:add(connection="ldaps_admin_connection")
+/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add(group-attribute="memberOf",iterative=true,group-dn-attribute="dn", group-name="SIMPLE",group-name-attribute="cn")
 
-/core-service=management/security-realm=ManagementRealm:write-attribute(name=map-groups-to-roles, value=true)
-/core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute(name=skip-group-loading,value=true)
+/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm:write-attribute(name=map-groups-to-roles, value=true)
+/host={{NODE_NAME}}/core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute(name=skip-group-loading,value=true)
 
-/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
-/core-service=management/access=authorization/role-mapping=Administrator:add
-/core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
+/host={{NODE_NAME}}/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
+/host={{NODE_NAME}}/core-service=management/access=authorization/role-mapping=Administrator:add
+/host={{NODE_NAME}}/core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
 
 
 run-batch
