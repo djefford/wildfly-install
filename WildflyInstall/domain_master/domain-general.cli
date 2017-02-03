@@ -56,6 +56,11 @@ batch
 /core-service=management/access=authorization/role-mapping=Administrator:add
 /core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
 
+# Remove Default Server Groups
+/server-group=main-server-group:remove()
+/server-group=other-server-group:remove()
+
+
 /host=master:write-attribute(name=name,value="{{SHORT_HOSTNAME}}")
 /host=master:reload
 
