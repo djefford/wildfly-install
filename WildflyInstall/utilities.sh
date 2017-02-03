@@ -349,7 +349,7 @@ executeCLI() {
 
 	if [ $insttype = "standalone" ]; then
 		cmd="${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990"
-	elif [ $insttype = "domain" ]; then
+	else
 		cmd="${home}/bin/jboss-cli.sh -c"
 	fi
 
@@ -363,11 +363,11 @@ executeCLI() {
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
 		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
-		echo "$cmd --file=${script} "
+		echo "$cmd --command=${script} "
 		$cmd --file=${script} ; rc=$?
 	fi
 
-	if [ "$rc" != 0 ]; then
+	if [ "$rc" != "0" ]; then
 		printf "$outformat" "${FUNCNAME}:" "ERROR:" "Unable to execute ${script}."
 		exit 1
 	fi
