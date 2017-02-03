@@ -347,7 +347,7 @@ executeCLI() {
 	insttype=$4
 	hostname=`hostname -f`
 
-	if [ $insttype = "standalone" ]; then
+	if [ "$insttype" = "standalone" ]; then
 		cmd="${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990"
 	else
 		cmd="${home}/bin/jboss-cli.sh -c"
