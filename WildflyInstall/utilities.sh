@@ -344,25 +344,25 @@ executeCLI() {
 	home=$1
 	option=$2
 	script=$3
-	insttype=$4
+	#insttype=$4
 	hostname=`hostname -f`
 
-	if [ "$insttype" = "standalone" ]; then
-		cmd="${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990"
-	else
-		cmd="${home}/bin/jboss-cli.sh -c"
-	fi
+#	if [ "$insttype" = "standalone" ]; then
+#		cmd="${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990"
+#	else
+#		cmd="${home}/bin/jboss-cli.sh -c"
+#	fi
 
 	printf "$outformat" "${FUNCNAME}:" "I:" "Executing ${script}."
 
 	if [ "$option" = "batch" ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing batch script: ${script}."
-		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=$?
-		$cmd --file=${script} ; rc=$?
+		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=$?
+		#$cmd --file=${script} ; rc=$?
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
-		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
-		$cmd --command="${script}" ; rc=$?
+		${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
+		#$cmd --command="${script}" ; rc=$?
 	fi
 
 	if [ "$rc" != "0" ]; then
