@@ -358,13 +358,11 @@ executeCLI() {
 	if [ "$option" = "batch" ]; then
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing batch script: ${script}."
 		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --file=$script ; rc=$?
-		echo "$cmd --file=${script} "
 		$cmd --file=${script} ; rc=$?
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
 		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
-		echo "$cmd --command=${script} "
-		$cmd --file=${script} ; rc=$?
+		$cmd --file="${script}" ; rc=$?
 	fi
 
 	if [ "$rc" != "0" ]; then
