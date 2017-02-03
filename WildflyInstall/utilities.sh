@@ -362,7 +362,7 @@ executeCLI() {
 	else
 		printf "$outformat" "${FUNCNAME}:" "I:" "Executing command: ${script}."
 		#${home}/bin/jboss-cli.sh -c --controller=${hostname}:9990 --command="${script}" ; rc=$?
-		$cmd --file="${script}" ; rc=$?
+		$cmd --command="${script}" ; rc=$?
 	fi
 
 	if [ "$rc" != "0" ]; then
