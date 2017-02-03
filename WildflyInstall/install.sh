@@ -136,6 +136,7 @@ for file in `ls ./working`; do
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
 	replaceVar "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
 	replaceVar "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
+	replaceVar "{{IP_ADDR}}" "$IP_ADDR" "$file_loc"
 
 	# Vault replacements
 	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
