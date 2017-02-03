@@ -8,6 +8,7 @@ SOFTWARE_HOME="${HOME_DIR}/software"
 MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
 
 HOSTNAME="app1.mustin.vm"
+IP_ADDR="192.168.1.110"
 SMTP_SERVER="mail.google.com"
 
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
@@ -22,7 +23,7 @@ SHORT_HOSTNAME="app1"
 PATCH_LIST=()
 
 # Installation type, either 'standalone','domain_master', 'domain_slave'
-INSTALL_TYPE="domain"
+INSTALL_TYPE="domain_master"
 
 ### LDAP related configurations
 LDAP_URL="ldaps://support1.mustin.vm:636"
