@@ -233,7 +233,12 @@ done
 printf " %s\n" "Stopping wildfly..."
 echo $divider ; sleep 2
 
-executeCLI $wildfly_home "command" "shutdown"
+if [ "$INSTANCE_TYPE" = "standalone" ]; then
+	executeCLI $wildfly_home "command" "shutdown"
+else
+	executeCLI $wildfly_home "command" "shutdown --host=$SHORT_HOSTNAME"
+fi
+
 
 printf " %s\n" "Script completed successfully."
 echo $divider
