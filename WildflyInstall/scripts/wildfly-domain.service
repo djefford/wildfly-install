@@ -3,8 +3,8 @@ Description=Wildfly Domain Startup Script
 After=syslog.target network.target
 
 [Service]
-Type=oneshot
-EnvironmentFile={{WILDFLY_HOME}}/bin/domain/wildfly.conf
+Type=forking
+EnvironmentFile={{WILDFLY_HOME}}/bin/{{INSTANCE_TYPE}}/wildfly.conf
 ExecStart={{ADMIN_HOME}}/scripts/wildfly-init.sh start
 ExecStop={{ADMIN_HOME}}/scripts/wildfly-init.sh stop
 SuccessExitStatus=143
