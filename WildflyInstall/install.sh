@@ -162,6 +162,14 @@ printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_T
 mkdir ${wildfly_home}/bin/${INSTALL_TYPE}
 cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
 
+if [ -f ./working/jboss-cli.xml ]; then
+	cp ./working/jboss-cli.xml ${wildfly_home}/bin/
+fi
+
+if [ -f ./working/jboss-cli-logging.properties ]; then
+	cp ./working/jboss-cli-logging.properties ${wildfly_home}/bin/
+fi
+
 printf " %s\n" "Completed setting up ${wildfly_home}/bin/${INSTALL_TYPE}."
 
 echo $divider
