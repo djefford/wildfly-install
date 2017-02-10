@@ -56,6 +56,10 @@ batch
 /core-service=management/access=authorization/role-mapping=Administrator:add
 /core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add(name={{LDAP_ADMIN_GROUP}}, type=GROUP)
 
+# Update ports
+/host=master/core-service=management/management-interface=http-interface:write-attribute(name=secure-port, value=9443)
+#/host=master/core-service=management/management-interface=http-interface:undefine-attribute(name=port)
+
 # Remove Default Server Groups
 /server-group=main-server-group:remove()
 /server-group=other-server-group:remove()
