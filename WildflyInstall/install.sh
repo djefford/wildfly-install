@@ -21,7 +21,7 @@ divider=`printf '=%.s' {1..40} ; echo`	# Prints dividing line of "=" in logging 
 
 
 echo $divider
-printf " %s\n" "Starting $title Script..."
+printf " %s\n" "Starting $title Script in ${INSTALL_TYPE} mode..."
 echo $divider
 
 # Create initial directory structure.
@@ -76,10 +76,12 @@ genKeystore keystore.jks ${HOSTNAME} ${wildfly_home}/ssl
 
 echo $divider
 
+
 # Create vault keystore for wildfly
 genKeystore vault.jks vault ${wildfly_home}/ssl
 
 echo $divider
+
 
 # Configure Vault.
 printf " %s\n" "Configuring vault."
@@ -88,11 +90,24 @@ echo $divider ; sleep 2
 # Read in vault password.
 read -s -p " Please provide vault keystore password: " vault_pass
 printf "\n"
+
+# Read in java keystore password
 echo $divider
 read -s -p " Please provide java keystore password: " keystore_pass
+printf "\n"
 
 # Add default keystore information to vault.
 vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
+
+# Read in truststore keystore password and add it to the vault if (truststore.jks is present)
+if [ -f ./ssl/truststore.jks ]; then
+	echo $divider
+	cp ./ssl/truststore.jks ${wildfly_home}/ssl
+	printf " %s\n" "truststore.jks detected."
+	read -s -p " Please provide truststore password: " truststore_pass
+	printf "\n"
+	vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT trustKeystorePws trustKeystore $truststore_pass add
+fi
 
 # Read in ldap password.
 echo $divider
