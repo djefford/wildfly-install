@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Functions used for isntallation script.
+
+err() {
+  echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+}
+
+print_line () {
+
+  # TODO(djefford): Finish function to print properly formatted messages. 
+  echo $1
+
+}
+
+##################################################
+# Evaulates a return code and prints appropriate message
+# Globals:
+#   None
+# Arguments:
+#   Return Code (integer value)
+#   Message to print for success (return code 0)
+#   Message to print for failure (non-zero return code)
+# Returns:
+#   None
+##################################################
+rc_eval () {
+
+  return_code=$1
+  success_message=$2
+  failure_message=$3
+
+  if [ "$return_code" == 0 ]; then
+    print_line $success_message
+  else
+    print_line $failure_message
+  fi
+
+}
+
+##################################################
+# Create directory, but do not overwrite if already exists.
+# Globals:
+#   None
+# Arguments:
+#   Directory to create
+# Returns:
+#   None
+##################################################
+create_dir () {
+
+  new_dir=$1
+
+  if [ ! -d ${new_dir} ]; then
+
+    print_line "I: Cannot locate ${new_dir}. Creating..."
+    mkdir -p ${new_dir} ; rc=$?
+
+    rc_eval "${rc}" "I: Successfully created ${new_dir}." \
+      "E: Unable to create ${new_dir}."
+
+  else
+    print_line "I: Directory ${new_dir} already exists. Skipping."
+  fi
+
+}
+
+##################################################
+# Unpack and install media into target location.
+# Globals:
+#   None
+# Arguments:
+#   Media file location, ZIP format
+#   Target location for software
+# Returns:
+#   None
+##################################################
+extract_zip_media () {
+
+  media=$1
+  unpack_loc=$2
+
+  if [ ! -d ${media} ]; then
+    print_line "E: Unable to locate ${media}."; exit 127
+  fi
+
+  unzip -q $media -d $unpack_loc ; rc=$?
+
+
+}
+
+
+
+
+
+
