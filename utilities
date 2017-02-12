@@ -86,9 +86,34 @@ extract_zip_media () {
 
   unzip -q $media -d $unpack_loc ; rc=$?
 
+  rc_eval "${rc}" "I: Successfully unpacked ${media} to ${unpack_loc}." \
+    "E: Unable to unpack ${media} to ${unpack_loc}."
 
 }
 
+##################################################
+# Replace all placeholder variables (strings) in files.
+# Globals:
+#   None
+# Arguments:
+#   String to be replaced
+#   New string
+#   Target file
+# Returns:
+#   None
+##################################################
+replace_var () {
+
+  target_str=$1
+  new_str=$2
+  target_file=$3
+
+  # Escape (most) special characters to prevent issues with replacement.
+  esc_new_str=$(echo "${new_str}" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')
+
+  sed -i "s/${target_str}/${esc_new_str}/g" $file
+
+}
 
 
 
