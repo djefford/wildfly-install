@@ -23,7 +23,7 @@ SHORT_HOSTNAME="app1"
 PATCH_LIST=()
 
 # Installation type, either 'standalone','domain_master', 'domain_slave'
-INSTALL_TYPE="domain_master"
+INSTALL_TYPE="standalone"
 
 ### LDAP related configurations
 LDAP_URL="ldaps://support1.mustin.vm:636"

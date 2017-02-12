@@ -96,9 +96,6 @@ echo $divider
 read -s -p " Please provide java keystore password: " keystore_pass
 printf "\n"
 
-# Add default keystore information to vault.
-vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
-
 # Read in truststore keystore password and add it to the vault if (truststore.jks is present)
 if [ -f ./ssl/truststore.jks ]; then
 	echo $divider
@@ -108,6 +105,9 @@ if [ -f ./ssl/truststore.jks ]; then
 	printf "\n"
 	vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT trustKeystorePws trustKeystore $truststore_pass add
 fi
+
+# Add default keystore information to vault.
+vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
 
 # Read in ldap password.
 echo $divider
@@ -211,7 +211,7 @@ for file in `ls ./working_scripts` ; do
 	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
 	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
 	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
-	replaceVar "{{INSTANCE_TYPE}}" "$INSTANCE_TYPE" "$file_loc"
+	replaceVar "{{INSTALL_TYPE}}" "$INSTALL_TYPE" "$file_loc"
 	replaceVar "{{ADMIN_HOME}}" "$ADMIN_HOME" "$file_loc"
 
 done
@@ -257,7 +257,7 @@ done
 printf " %s\n" "Stopping wildfly..."
 echo $divider ; sleep 2
 
-if [ "$INSTANCE_TYPE" = "standalone" ]; then
+if [ "$INSTALL_TYPE" = "standalone" ]; then
 	executeCLI $wildfly_home "command" "shutdown"
 else
 	executeCLI $wildfly_home "command" "shutdown --host=$SHORT_HOSTNAME"
