@@ -13,6 +13,19 @@ print_line () {
 
 }
 
+verify_loc () {
+
+  location=$1
+
+  if [ -d $location ] || [ -f $location ]; then
+    print_line "I: Located ${location}."
+  else
+    print_line "E: Unable to locate ${location}."
+    exit 127
+  fi 
+
+}
+
 ##################################################
 # Evaulates a return code and prints appropriate message
 # Globals:
@@ -115,6 +128,10 @@ replace_var () {
 
 }
 
+##################################################
+# Add value to vault.
+# Globals:
+#   
 
 
 
