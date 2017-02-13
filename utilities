@@ -102,7 +102,7 @@ extract_zip_media () {
   media=$1
   unpack_loc=$2
 
-  if [ ! -d ${media} ]; then
+  if [ ! -f ${media} ]; then
     print_line "E: Unable to locate ${media}."; exit 127
   fi
 
