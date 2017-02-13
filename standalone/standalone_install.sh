@@ -11,7 +11,7 @@ print_divider
 print_line "Starting Wildfly Installation in standalone mode."
 print_divider ; sleep 2
 
-print_line "Verifying directories"
+print_line "Verifying directories: "
 
 create_dir "${WILDFLY_HOME}"
 create_dir "${LOGS_DIR}"
