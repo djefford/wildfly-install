@@ -11,14 +11,14 @@ print_line () {
   message=$1
 
   format=" %s\n"
-  printf ${format} "$1" 
+  printf "${format}" "$1" 
 
 }
 
 print_divider () {
 
   format="=%.s"
-  printf ${format} {1..50} ; echo
+  printf "${format}" {1..50} ; echo
 
 }
 
