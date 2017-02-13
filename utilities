@@ -122,16 +122,87 @@ replace_var () {
   target_file=$3
 
   # Escape (most) special characters to prevent issues with replacement.
-  esc_new_str=$(echo "${new_str}" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')
+  esc_new_str="$(echo \"${new_str}\" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')"
 
-  sed -i "s/${target_str}/${esc_new_str}/g" $file
+  print_line "I: Replacing ${target_str} with ${new_str}."
+
+  sed -i "s/${target_str}/${esc_new_str}/g" $file ; rc=$?
+
+  rc_eval "${rc}" "I: Successfully replaced ${target_str} with ${new_str}" \
+    "E: Unable to replace ${target_str} with ${new_str}"
 
 }
 
 ##################################################
 # Add value to vault.
 # Globals:
-#   
+#   WILDFLY_HOME
+#   VAULT_KEYSTORE
+#   VAULT_FILE_DIR
+#   VAULT_ALIAS
+#   VAULT_SALT
+#   VAULT_ITERATION
+# Arguments:
+#   Vault password
+#   Attribute Name
+#   Vault block
+#   Secured value (ex. password)
+# Returns:
+#   None
+##################################################
+vault_add_item () {
+
+  vault_pass=$1
+  attribute=$2
+  block=$3
+  sec_value=$4
+
+  # Build vault command.
+  vault_cmd="${WILDFLY_HOME}/bin/vault.sh -e ${VAULT_FILE_DIR} \
+    -k ${VAULT_KEYSTORE} \
+    -p \"${vault_pass}\" \
+    -s ${VAULT_SALT} \
+    -v ${VAULT_ALIAS} \
+    -i ${VAULT_ITERATION} \
+    -a ${attribute} \
+    -b ${block} \
+    -x ${sec_valut}"
+
+  print_line "I: Adding $attribute to vault in block $block"
+
+  $vault_cmd ; rc=$?
+
+  rc_eval "${rc}" "I: Successfully added ${attribute} to vault." \
+    "E: Failed to add ${attribute} to vault."
+
+}
+
+##################################################
+# Execute Wildfly CLI script on a standalone instance.
+# Globals:
+#   WILDFLY_HOME
+#   HOSTNAME
+# Arguments:
+#   Script
+# Returns:
+#   None
+##################################################
+execute_standalone_cli () {
+
+  cli_script="$1"
+
+  jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh -c \
+    --controller=${HOSTNAME}:9990 \
+    --file=${cli_script}"
+
+  print_line "I: Executing ${script}."
+
+  $jboss_cmd ; rc=$?
+
+  rc_eval "${rc}" "I: Successfully executed ${script}." \
+    "E: Execution of ${script} failed."
+
+}
 
 
 
