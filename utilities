@@ -15,6 +15,13 @@ print_line () {
 
 }
 
+print_divider () {
+
+  format="=%.s"
+  printf ${format} {1..50} ; echo
+
+}
+
 verify_loc () {
 
   location=$1
