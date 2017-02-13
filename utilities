@@ -8,8 +8,10 @@ err() {
 
 print_line () {
 
-  # TODO(djefford): Finish function to print properly formatted messages. 
-  echo $1
+  message=$1
+
+  format=" %s\n"
+  printf ${format} "$1" 
 
 }
 
