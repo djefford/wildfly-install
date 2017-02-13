@@ -1,0 +1,30 @@
+#### Variables for the install.sh script.
+WILDFLY_HOME="/opt/software/wildfly"
+LOGS_DIR="/opt/logs/wildfly"
+DEV_HOME="/od"
+JAVA_HOME="/usr/lib/jvm/jre-openjdk"
+MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
+HOSTNAME="app1.mustin.vm"
+
+# Wildfly Configuration Variables
+SMTP_SERVER="mail.google.com"
+WILDFLY_USER="wildfly"
+ADMIN_GROUP="wheel"
+
+# (Optional) Patch List
+PATCH_LIST=()
+
+### LDAP related configurations
+LDAP_URL="ldaps://support1.mustin.vm:636"
+LDAP_ADMIN_GROUP="wildfly_admins"
+LDAP_ADMIN_GROUP_DN="cn=wildfly_admins,cn=groups,cn=compat,dc=mustin,dc=vm"
+LDAP_BIND_DN="uid=wildfly_bind,cn=sysaccounts,cn=etc,dc=mustin,dc=vm"
+LDAP_NAME_ATTRIBUTE="uid"
+LDAP_BASE_DN="dc=mustin,dc=vm"
+
+# Vault related information
+VAULT_ENC_FILE_DIR="${WILDFLY_HOME}/vault"
+VAULT_SALT="12345678"
+VAULT_ITERATION_COUNT="100"
+VAULT_ALIAS="vault"
+VAULT_KEYSTORE="${WILDFLY_HOME}/ssl/vault.jks"
