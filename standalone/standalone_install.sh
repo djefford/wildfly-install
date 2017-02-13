@@ -11,14 +11,23 @@ print_divider
 print_line "Starting Wildfly Installation in standalone mode."
 print_divider ; sleep 2
 
-print_line "-Verifying directories."
+print_line "Start: Verifying directories." ; sleep 2
 
 create_dir "${WILDFLY_HOME}"
 create_dir "${LOGS_DIR}"
 
+print_line "Finish: Verifying directories."
+
 print_divider
-print_line "-Unpacking Wildfly Media"
-print_divider ; sleep 2
+print_line "Start: Unpacking Wildfly Media" ; sleep 2
+
+extract_zip_media $MAIN_MEDIA ./working_media
+
+# Move unpacked directory to WILDFLY_HOME
+mv ./working_media/wildfly-8.2.0.Final/* $WILDFLY_HOME
+
+print_line "Finish: Unpacking Wildfly Media"
+
 
 
 #echo $divider
