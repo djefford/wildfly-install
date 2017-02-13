@@ -1,7 +1,6 @@
 #### Variables for the install.sh script.
 WILDFLY_HOME="/opt/software/wildfly"
 LOGS_DIR="/opt/logs/wildfly"
-DEV_HOME="/od"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 MAIN_MEDIA="/opt/media/wildfly-8.2.0.Final.zip"
 HOSTNAME="app1.mustin.vm"
