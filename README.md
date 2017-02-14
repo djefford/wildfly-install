@@ -2,4 +2,4 @@
 Scripts to install and configure Wildfly.
 
 ## Description
-These script should install and configure wildfly on a RHEL 7 based system.
+These scripts should install and configure wildfly 8.2.0 on a RHEL 7 based system.
