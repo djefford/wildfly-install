@@ -213,6 +213,31 @@ execute_standalone_cli () {
 
 }
 
+##################################################
+# Execute Wildfly CLI command on a standalone instance.
+# Globals:
+#   WILDFLY_HOME
+#   HOSTNAME
+# Arguments:
+#   Command
+# Returns:
+#   None
+##################################################
+execute_standalone_command () {
 
+  cli_command="$1"
+
+  jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh -c \
+    --controller=${HOSTNAME}:9990 \
+    --command=${cli_command}"
+
+  print_line "I: Executing command: \"${command}\"."
+
+  $jboss_cmd ; rc=$?
+
+  rc_eval "${rc}" "I: Successfully executed command \"${command}\"." \
+    "E: Execution of command \"${command}\" failed."
+
+}
 
 
