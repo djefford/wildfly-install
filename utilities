@@ -44,7 +44,7 @@ verify_loc () {
 #   Message to print for success (return code 0)
 #   Message to print for failure (non-zero return code)
 # Returns:
-#   None
+#   Error code 127 if return code != 0
 ##################################################
 rc_eval () {
 
@@ -56,6 +56,7 @@ rc_eval () {
     print_line "$success_message"
   else
     print_line "$failure_message"
+    exit 127
   fi
 
 }
@@ -74,13 +75,10 @@ create_dir () {
   new_dir=$1
 
   if [ ! -d ${new_dir} ]; then
-
     print_line "I: Cannot locate ${new_dir}. Creating..."
     mkdir -p ${new_dir} ; rc=$?
-
     rc_eval "${rc}" "I: Successfully created ${new_dir}." \
       "E: Unable to create ${new_dir}."
-
   else
     print_line "I: Directory ${new_dir} already exists. Skipping."
   fi
@@ -231,7 +229,7 @@ execute_standalone_command () {
     --controller=${HOSTNAME}:9990 \
     --command=${cli_command}"
 
-  print_line "I: Executing command: \"${command}\"."
+  print_line "I: Executing command \"${command}\"."
 
   $jboss_cmd ; rc=$?
 
@@ -240,4 +238,28 @@ execute_standalone_command () {
 
 }
 
+##################################################
+# Apply Wildfly patch.
+# Globals:
+#   WILFLY_HOME
+#   HOSTNAME
+# Arguments:
+#   Patch file
+# Returns:
+#   None
+##################################################
+apply_patch () {
 
+  patch_file="${1}"
+
+  jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh \
+    \"patch apply --override-all ${patch_file}\""
+
+  print_line "I: Applying patch ${patch_file}"
+
+  $jboss_cmd ; rc=$?
+
+  rc_eval "${rc}" "I: Successfully applied patch ${patch_file}" \
+    "E: Application of patch ${patch_file} failed."
+
+}
