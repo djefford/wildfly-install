@@ -24,10 +24,21 @@ print_line "Start: Unpacking Wildfly Media" ; sleep 2
 extract_zip_media $MAIN_MEDIA ./working_media
 
 # Move unpacked directory to WILDFLY_HOME
-mv ./working_media/wildfly-8.2.0.Final/* $WILDFLY_HOME
+mv ./working_media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
+rc_eval "$rc" "I: Successfully moved media to ${WILDFLY_HOME}." \
+  "E: Failed to move media to ${WILDFLY_HOME}."
 
 print_line "Finish: Unpacking Wildfly Media"
 
+print_divider
+
+# If patch files are listed, then install patch
+if [ ${#PATCH_LIST[@]} -gt 0 ]; then
+  print_line "Start patching:"
+  for patch in $PATCH_LIST ; do
+    #TODO(djefford): Finish patching
+  done
+fi
 
 
 #echo $divider
