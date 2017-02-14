@@ -49,13 +49,13 @@ verify_loc () {
 rc_eval () {
 
   return_code=$1
-  success_message=$2
-  failure_message=$3
+  success_message="$2"
+  failure_message="$3"
 
   if [ "$return_code" == 0 ]; then
-    print_line $success_message
+    print_line "$success_message"
   else
-    print_line $failure_message
+    print_line "$failure_message"
   fi
 
 }
