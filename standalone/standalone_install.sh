@@ -1,6 +1,9 @@
 #!/bin/bash
 ##################################################
 # Description: Installs, patches, and configures Wildfly 8.2.X in standalone mode
+# 
+# This script is designed to be called one directory higher than it is placed
+#   in the repository.
 # Author: Dustin Jefford
 ##################################################
 
@@ -25,7 +28,7 @@ extract_zip_media $MAIN_MEDIA ./working_media
 
 # Move unpacked directory to WILDFLY_HOME
 mv ./working_media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
-rc_eval "$rc" "I: Successfully moved media to ${WILDFLY_HOME}." \
+rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
   "E: Failed to move media to ${WILDFLY_HOME}."
 
 print_line "Finish: Unpacking Wildfly Media"
@@ -36,57 +39,26 @@ print_divider
 if [ ${#PATCH_LIST[@]} -gt 0 ]; then
   print_line "Start patching:"
   for patch in $PATCH_LIST ; do
-    #TODO(djefford): Finish patching
+    apply_patch $patch
   done
 fi
 
+print_divider
+print_line "Verifying and placing SSL Keystore files."
+print_divider ; sleep 2
 
-#echo $divider
-#printf " %s\n" "Starting $title Script in ${INSTALL_TYPE} mode..."
-#echo $divider
-#
-## Create initial directory structure.
-#printf " %s\n" "Verifying and creating directory structure."
-#echo $divider ; sleep 2
-#
-#createDirectoryStructure $HOME_DIR $LOGS_DIR $DEV_HOME
-#
-#echo $divider
-#
-## Verify Java installation.
-#printf " %s\n" "Verifying Java installation at ${JAVA_HOME}"
-#echo $divider ; sleep 2
-#
-#verifyJava $JAVA_HOME
-#
-#echo $divider
-#
-## Deploy JBoss
-#printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
-#echo $divider ; sleep 2
-#
-## InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
-#installWildfly $MAIN_MEDIA $SOFTWARE_HOME
-#
-#echo $divider
-#
-#wildfly_dir=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly directory
-#wildfly_home=${SOFTWARE_HOME}/${wildfly_dir}								# Wildfly Home, full path
-#
-## Apply optional patches
-#printf " %s\n" "Patching Wildfly."
-#echo $divider ; sleep 2
-#
-## Loop over patch list and install each patch.
-#if [ ${#PATCH_LIST[@]} -gt 0 ]; then
-#	for patch in $PATCH_LIST; do
-#		patchWildfly $wildfly_home $patch
-#	done
-#else
-#	printf " %s\n" "No patches found. Skipping." ; sleep 2
-#fi
-#
-#echo $divider
+verify_loc "./ssl/keystore.jks"
+verify_loc "./ssl/truststore.jks"
+verify_loc "./ssl/vault.jks"
+
+cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
+rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
+  "E: Failed to move SSL keystores to ${WILDFLY_HOME}."
+
+print_divider
+print_line "Configuring Vault"
+print_divider ; sleep 2
+
 #
 ## Create SSL vaults - keystore.jks, and vault.jks
 #printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
