@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Functions used for isntallation script.
+# Functions used for installation script.
 
 err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
