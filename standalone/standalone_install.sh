@@ -24,10 +24,12 @@ print_line "Finish: Verifying directories."
 print_divider
 print_line "Start: Unpacking Wildfly Media" ; sleep 2
 
-extract_zip_media $MAIN_MEDIA ./working_media
+mkdir -p ./working/media
+
+extract_zip_media $MAIN_MEDIA ./working/media
 
 # Move unpacked directory to WILDFLY_HOME
-mv ./working_media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
+mv ./working/media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
 rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
   "E: Failed to move media to ${WILDFLY_HOME}."
 
@@ -93,85 +95,60 @@ vault_mask_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$vault_mask_pass")
 
 print_line "Finish: Captured masked vault password."
 
+print_divider
+print_line "Start: Replacing Variables in templates." ; sleep 2
+
+# Create short_name for JVM naming later
+short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
+
+cp -r standalone/templates ./working
+
+for file in `ls ./working/templates`; do
+  file_loc="./working/templates/$file"
+  print_line "Updating ${file_loc}..."
+
+  replace_var "{{WILDFLY_HOME}}" "$WILDFLY_HOME" "$file_loc"
+  replace_var "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
+  replace_var "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+  replace_var "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
+  replace_var "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
+  replace_var "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
+  replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
+
+  replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
+
+  replace_var "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
+  replace_var "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
+  replace_var "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
+  replace_var "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
+  replace_var "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
+  replace_var "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
+
+  replace_var "{{VAULT_ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
+  replace_var "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
+  replace_var "{{VAULT_ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
+  replace_var "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
+  replace_var "{{VAULT_KEYSTORE}}" "$VAULT_KEYSTORE" "$file_loc"
+
+done
+
+print_line "Finish: Variable replacement"
+
+print_divider
+print_line "Start: Placing start-up scripts" ; sleep 2
+
+mkdir -p ${WILDFLY_HOME}/conf/standalone
+mkdir -p ${WILDFLY_HOME}/conf/scripts
+
+cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
+cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
+
+print_line "Finish: Placing start-up scripts"
 
 
-## Read in truststore keystore password and add it to the vault if (truststore.jks is present)
-#if [ -f ./ssl/truststore.jks ]; then
-#	echo $divider
-#	cp ./ssl/truststore.jks ${wildfly_home}/ssl
-#	printf " %s\n" "truststore.jks detected."
-#	read -s -p " Please provide truststore password: " truststore_pass
-#	printf "\n"
-#	vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT trustKeystorePws trustKeystore $truststore_pass add
-#fi
-#
-## Add default keystore information to vault.
-#vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
-#
-## Read in ldap password.
-#echo $divider
-#read -s -p " Please provide ldap bind account password: " ldap_pass
-#printf "\n"
-#
-## Add LDAP Bind account password to the vault.
-#vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT ldapAuthPwd ldapAuth $ldap_pass add
-#
-#
-## Verify input and capture masked password.
-#printf " %s\n" "Verifying attribute exists in vault."
-#masked_pass=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
-#
-#masked_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$masked_pass")
-#
-#echo $divider
-#
-## Substitue variables and configure wildfly.
-#printf " %s\n" "Updating configuration files with custom variables."
-#echo $divider ; sleep 2
-#
-#printf " %s\n" "Moving ${INSTALL_TYPE} files to working directory..."
-#echo $divider ; sleep 2
-#
-## Move configuration files and cli script to working directory
-## This preserves the original files for future use or comparison.
-#cp -r ./${INSTALL_TYPE} ./working
-#
-## Replace variables in cli and conf templates
-#for file in `ls ./working`; do
-#
-#	file_loc="./working/$file"
-#
-#	printf " %s\n" "Updating ${file_loc}..."
-#
-#	# General replacements
-#	replaceVar "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
-#	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
-#	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
-#	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-#	replaceVar "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
-#	replaceVar "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
-#	replaceVar "{{IP_ADDR}}" "$IP_ADDR" "$file_loc"
-#
-#	# Vault replacements
-#	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
-#	replaceVar "{{MASKED_VAULT_PASSWORD}}" "${masked_pass}" "$file_loc"
-#	replaceVar "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
-#	replaceVar "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
-#	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
-#
-#	# LDAP replacements
-#	replaceVar "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
-#	replaceVar "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
-#	replaceVar "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
-#	replaceVar "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
-#	replaceVar "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
-#	replaceVar "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
-#
-#	# Domain Install replacements
-#	replaceVar "{{SHORT_HOSTNAME}}" "$SHORT_HOSTNAME" "$file_loc"
-#
-#done
-#
+
+
 #printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
 #mkdir ${wildfly_home}/bin/${INSTALL_TYPE}
 #cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
