@@ -175,7 +175,7 @@ vault_add_item () {
     -i ${VAULT_ITERATION_COUNT} \
     -a ${attribute} \
     -b ${block} \
-    -x ${sec_valut}"
+    -x ${sec_value}"
 
   print_line "I: Adding $attribute to vault in block $block"
 
