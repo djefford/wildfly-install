@@ -33,10 +33,9 @@ rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
 
 print_line "Finish: Unpacking Wildfly Media"
 
-print_divider
-
 # If patch files are listed, then install patch
 if [ ${#PATCH_LIST[@]} -gt 0 ]; then
+  print_divider
   print_line "Start patching:"
   for patch in $PATCH_LIST ; do
     apply_patch $patch
@@ -44,8 +43,7 @@ if [ ${#PATCH_LIST[@]} -gt 0 ]; then
 fi
 
 print_divider
-print_line "Verifying and placing SSL Keystore files."
-print_divider ; sleep 2
+print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
 
 verify_loc "./ssl/keystore.jks"
 verify_loc "./ssl/truststore.jks"
@@ -55,40 +53,24 @@ cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
 rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
   "E: Failed to move SSL keystores to ${WILDFLY_HOME}."
 
-print_divider
-print_line "Configuring Vault"
-print_divider ; sleep 2
+print_line "Finish: Placing SSL keystore files."
 
-#
-## Create SSL vaults - keystore.jks, and vault.jks
-#printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
-#echo $divider ; sleep 2
-#
-## Create java keystore for wildfly.
-#genKeystore keystore.jks ${HOSTNAME} ${wildfly_home}/ssl
-#
-#echo $divider
-#
-#
-## Create vault keystore for wildfly
-#genKeystore vault.jks vault ${wildfly_home}/ssl
-#
-#echo $divider
-#
-#
-## Configure Vault.
-#printf " %s\n" "Configuring vault."
-#echo $divider ; sleep 2
-#
-## Read in vault password.
-#read -s -p " Please provide vault keystore password: " vault_pass
-#printf "\n"
-#
-## Read in java keystore password
-#echo $divider
-#read -s -p " Please provide java keystore password: " keystore_pass
-#printf "\n"
-#
+print_divider
+print_line "Start: Gathering user input for vault configuration." ; sleep 2
+
+read -s -p " Password for java keystore: "  java_jks_pass ; print_line
+read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+
+print_line "Finish: Gathering user input."
+
+print_divider
+print_line "Start: Configuring Vault" ; sleep 2
+
+vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
+
+
+
 ## Read in truststore keystore password and add it to the vault if (truststore.jks is present)
 #if [ -f ./ssl/truststore.jks ]; then
 #	echo $divider
