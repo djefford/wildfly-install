@@ -58,16 +58,40 @@ print_line "Finish: Placing SSL keystore files."
 print_divider
 print_line "Start: Gathering user input for vault configuration." ; sleep 2
 
-read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+# TODO: Remove for real usage.
+#read -s -p " Password for java keystore: "  java_jks_pass ; print_line
+#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+#read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+#read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
+
+# Dummy values for testing
+java_jks_pass="changeit"
+trust_jks_pass="changeit"
+vault_jks_pass="changeit"
+ldap_bind_pass="wildfly_password"
 
 print_line "Finish: Gathering user input."
 
 print_divider
-print_line "Start: Configuring Vault" ; sleep 2
+print_line "Start: Configuring Vault and store secrets." ; sleep 2
 
 vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
+vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
+vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
+
+print_line "Finished: Configuring Vault."
+
+print_divider
+print_line "Start: Capture masked vault password." ; sleep 2
+
+# Grab masked password for vault for later use
+vault_mask_pass=`vault_add_item $vault_jks_pass vaultAuthPwd vaultAuth $vault_jks_pass \
+  | grep -o "\"MASK-.*\""`
+
+# Remove beginning and trailing "
+vault_mask_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$vault_mask_pass")
+
+print_line "Finish: Captured masked vault password."
 
 
 
