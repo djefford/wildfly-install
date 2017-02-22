@@ -2,6 +2,8 @@
 #
 # Functions used for installation script.
 
+source ./parameters
+
 err() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
 }
