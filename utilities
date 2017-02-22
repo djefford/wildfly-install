@@ -147,10 +147,10 @@ replace_var () {
 # Globals:
 #   WILDFLY_HOME
 #   VAULT_KEYSTORE
-#   VAULT_FILE_DIR
+#   VAULT_ENC_FILE_DIR
 #   VAULT_ALIAS
 #   VAULT_SALT
-#   VAULT_ITERATION
+#   VAULT_ITERATION_COUNT
 # Arguments:
 #   Vault password
 #   Attribute Name
@@ -167,12 +167,12 @@ vault_add_item () {
   sec_value=$4
 
   # Build vault command.
-  vault_cmd="${WILDFLY_HOME}/bin/vault.sh -e ${VAULT_FILE_DIR} \
+  vault_cmd="${WILDFLY_HOME}/bin/vault.sh -e ${VAULT_ENC_FILE_DIR} \
     -k ${VAULT_KEYSTORE} \
     -p \"${vault_pass}\" \
     -s ${VAULT_SALT} \
     -v ${VAULT_ALIAS} \
-    -i ${VAULT_ITERATION} \
+    -i ${VAULT_ITERATION_COUNT} \
     -a ${attribute} \
     -b ${block} \
     -x ${sec_valut}"
