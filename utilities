@@ -131,9 +131,9 @@ replace_var () {
   target_file=$3
 
   # Escape (most) special characters to prevent issues with replacement.
-  esc_new_str="$(echo \"${new_str}\" | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')"
+  esc_new_str="$(echo ${new_str} | sed 's/\\/\\&/g;s/\//\\&/g;s/\./\\&/g;s/\$/\\&/g;s/\*/\\&/g;s/\[/\\&/g;s/\]/\\&/g;s/\^/\\&/g')"
 
-  print_line "I: Replacing ${target_str} with ${new_str} in $target_file."
+  #print_line "I: Replacing ${target_str} with ${new_str} in $target_file."
 
   sed -i "s/${target_str}/${esc_new_str}/g" $target_file ; rc=$?
 
