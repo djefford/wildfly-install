@@ -1,7 +1,7 @@
 batch
 
 ### Set Default Name for initial standalone installation.
-:write-attribute(name=name,value="default-standalone")
+:write-attribute(name=name,value="default_standalone_{{SHORT_HOSTNAME}}")
 
 ### Configure default JVM server.log location
 /subsystem=logging/periodic-rotating-file-handler=FILE:change-file(file={path="${jboss.server.name}/server.log"})
@@ -19,7 +19,7 @@ batch
 /socket-binding-group=standard-sockets/socket-binding=management-http:undefine-attribute(name=port)
 
 ### Create / configure vault
-/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{MASKED_VAULT_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{WILDFLY_HOME}}/{{ENC_FILE_DIR}}")])
+/core-service=vault:add(vault-options=[("KEYSTORE_URL" => "{{WILDFLY_HOME}}/ssl/vault.jks"), ("KEYSTORE_PASSWORD" => "{{VAULT_MASKED_PASSWORD}}"), ("KEYSTORE_ALIAS" => "{{VAULT_ALIAS}}"), ("SALT" => "{{VAULT_SALT}}"), ("ITERATION_COUNT" => "{{VAULT_ITERATION_COUNT}}"), ("ENC_FILE_DIR" => "{{VAULT_ENC_FILE_DIR}}")])
 
 ### Configure ManagementRealm
 /core-service=management/security-realm=ManagementRealm/server-identity=ssl:add(alias="{{HOSTNAME}}", keystore-path="ssl/keystore.jks", keystore-relative-to="jboss.home.dir", keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", enabled-protocols=["TLSv1.2"])
