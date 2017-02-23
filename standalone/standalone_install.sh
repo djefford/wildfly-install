@@ -98,8 +98,9 @@ print_line "Finish: Captured masked vault password."
 print_divider
 print_line "Start: Replacing Variables in templates." ; sleep 2
 
-# Create short_name for JVM naming later
+# Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
+ip_addr=$(hostname -I)
 
 cp -r standalone/templates ./working
 
@@ -116,6 +117,7 @@ for file in `ls ./working/templates`; do
   replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
 
   replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
+  replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
 
   replace_var "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
   replace_var "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
