@@ -132,6 +132,8 @@ for file in `ls ./working/templates`; do
   replace_var "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
   replace_var "{{VAULT_KEYSTORE}}" "$VAULT_KEYSTORE" "$file_loc"
 
+  replace_var "{{VAULT_MASKED_PASSWORD}}" "$vault_mask_pass" "$file_loc"
+
 done
 
 print_line "Finish: Variable replacement"
