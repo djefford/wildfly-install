@@ -137,8 +137,9 @@ replace_var () {
 
   sed -i "s/${target_str}/${esc_new_str}/g" $target_file ; rc=$?
 
-  rc_eval "${rc}" "I: Successfully replaced ${target_str} with ${new_str}" \
-    "E: Unable to replace ${target_str} with ${new_str}"
+  if [ "${rc}" != 0 ]; then
+    print_line "E: Unable to replace ${target_str} with ${new_str}"
+  fi
 
 }
 
