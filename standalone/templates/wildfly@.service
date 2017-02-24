@@ -3,7 +3,7 @@ Description=Wildfly Standalone Startup Script
 After=syslog.target network.target
 
 [Service]
-Type=oneshot
+Type=forking
 EnvironmentFile={{WILDFLY_HOME}}/conf/%I/wildfly.conf
 ExecStart={{WILDFLY_HOME}}/conf/scripts/wildfly-init.sh start
 ExecStop={{WILDFLY_HOME}}/conf/scripts/wildfly-init.sh stop
