@@ -165,8 +165,20 @@ rc_eval "${rc}" "I: Successfully updated permissions." \
 print_line "Finish: Updating permissions."
 
 print_divider
-print_line "Start: Starting wildfly."
+print_line "Start: Starting wildfly." ; sleep 2
 
+start_stop_standalone start
+
+print_line "Finish: Starting wildfly." 
+
+print_divider
+
+
+print_line "Start: Stopping wildfly." ; sleep 2
+
+start_stop_standalone stop
+
+print_line "Finish: Stopping wildfly."
 
 
 ## Running permissions script
