@@ -60,17 +60,10 @@ print_line "Finish: Placing SSL keystore files."
 print_divider
 print_line "Start: Gathering user input for vault configuration." ; sleep 2
 
-# TODO: Remove for real usage.
-#read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-#read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
-#read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
-
-# Dummy values for testing
-java_jks_pass="changeit"
-trust_jks_pass="changeit"
-vault_jks_pass="changeit"
-ldap_bind_pass="wildfly_password"
+read -s -p " Password for java keystore: "  java_jks_pass ; print_line
+read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
 
 print_line "Finish: Gathering user input."
 
@@ -162,7 +155,7 @@ ${WILDFLY_HOME}/conf/crontabs/wildflyPerms.sh ; rc=$?
 rc_eval "${rc}" "I: Successfully updated permissions." \
   "E: Permissions updates failed."
 
-print_line "Finish: Updating permissions."
+print_line "Finish: Updating permissions"
 
 print_divider
 print_line "Start: Starting wildfly." ; sleep 2
@@ -172,58 +165,24 @@ start_stop_standalone start
 print_line "Finish: Starting wildfly." 
 
 print_divider
+print_line "Start: Configuring standalone instance"
 
+execute_standalone_cli ./working/templates/standalone-general.cli
 
+print_line "Finish: Configuring standalone instance"
+
+print_divider
 print_line "Start: Stopping wildfly." ; sleep 2
 
 start_stop_standalone stop
 
 print_line "Finish: Stopping wildfly."
 
+print_divider
 
-## Running permissions script
-#printf " %s\n" "Updating permissions..."
-#echo $divider ; sleep 2
-#
-#${ADMIN_HOME}/scripts/wildflyPerms.sh
-#
-#echo $divider
-#
-## Start Wildfly, in preparation to run the CLI scripts
-#printf " %s\n" "Starting Wildfly..."
-#echo $divider ; sleep 2
-#
-#startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE} ; rc=$?
-#
-#if [ "$rc" != 0 ] ; then
-#	printf " %s\n" "Unable to start Wildfly."
-#fi
-#
-#echo $divider
-#
-## Apply CLI scripts
-#printf " %s\n" "Applying CLI scripts."
-#echo $divider ; sleep 2
-#
-#for file_loc in `ls ./working/*.cli`; do
-#
-#	executeCLI $wildfly_home "batch" $file_loc
-#
-#done
-#
-## Stop Wildfly and finish the script
-#printf " %s\n" "Stopping wildfly..."
-#echo $divider ; sleep 2
-#
-#if [ "$INSTALL_TYPE" = "standalone" ]; then
-#	executeCLI $wildfly_home "command" "shutdown"
-#else
-#	executeCLI $wildfly_home "command" "shutdown --host=$SHORT_HOSTNAME"
-#fi
-#
-#
-#printf " %s\n" "Script completed successfully."
-#echo $divider
+print_line "Wildfly Installation completed in standalone mode."
 
+print_divider
+print_divider
 
 
