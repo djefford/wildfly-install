@@ -150,59 +150,25 @@ cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
 
 print_line "Finish: Placing start-up scripts"
 
+print_divider
+print_line "Start: Updating permissions." ; sleep 2
+
+mkdir -p ${WILDFLY_HOME}/conf/crontabs
+
+cp ./working/templates/wildflyPerms.sh ${WILDFLY_HOME}/conf/crontabs/
+
+${WILDFLY_HOME}/conf/crontabs/wildflyPerms.sh ; rc=$?
+
+rc_eval "${rc}" "I: Successfully updated permissions." \
+  "E: Permissions updates failed."
+
+print_line "Finish: Updating permissions."
+
+print_divider
+print_line "Start: Starting wildfly."
 
 
 
-#printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
-#mkdir ${wildfly_home}/bin/${INSTALL_TYPE}
-#cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
-#
-#if [ -f ./working/jboss-cli.xml ]; then
-#	cp ./working/jboss-cli.xml ${wildfly_home}/bin/
-#fi
-#
-#if [ -f ./working/jboss-cli-logging.properties ]; then
-#	cp ./working/jboss-cli-logging.properties ${wildfly_home}/bin/
-#fi
-#
-#printf " %s\n" "Completed setting up ${wildfly_home}/bin/${INSTALL_TYPE}."
-#
-#echo $divider
-#
-## Update and move scripts.
-#printf " %s\n" "Updating script files."
-#echo $divider ; sleep 2
-#
-#printf " %s\n" "Moving script files to working_scripts directory..."
-#echo $divider ; sleep 2
-#
-## Move scripts to working_scripts directory
-#cp -r ./scripts ./working_scripts
-#
-## Replace variables
-#for file in `ls ./working_scripts` ; do
-#
-#	file_loc="./working_scripts/$file"
-#
-#	printf " %s\n" "Updating ${file_loc}..."
-#
-#	# General replacements
-#	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
-#	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-#	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
-#	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
-#	replaceVar "{{INSTALL_TYPE}}" "$INSTALL_TYPE" "$file_loc"
-#	replaceVar "{{ADMIN_HOME}}" "$ADMIN_HOME" "$file_loc"
-#
-#done
-#
-#printf " %s\n" "Setting up script files in ${ADMIN_HOME}/scripts."
-#placeScripts ./working_scripts ${ADMIN_HOME}/scripts
-#
-#printf " %s\n" "Completed setting up script files in ${ADMIN_HOME}/scripts."
-#
-#echo $divider
-#
 ## Running permissions script
 #printf " %s\n" "Updating permissions..."
 #echo $divider ; sleep 2
