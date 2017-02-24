@@ -279,7 +279,7 @@ apply_patch () {
 start_stop_standalone () {
 
   cmd="${1}"
-  JBOSS_CONF=$WILDFLY_HOME/conf/standalone/wildfly.conf
+  export JBOSS_CONF=$WILDFLY_HOME/conf/standalone/wildfly.conf
   
   jboss_cmd="${WILDFLY_HOME}/conf/scripts/wildfly-init.sh $cmd"
 
