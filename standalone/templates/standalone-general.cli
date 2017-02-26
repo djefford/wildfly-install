@@ -28,7 +28,7 @@ batch
 	("ENC_FILE_DIR" => "{{VAULT_ENC_FILE_DIR}}")])
 
 ### Configure RBAC
-/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
+/core-service=management/access=authorization:write-attribute(name=provider, value=rbac)
 
 ### Configure Management Realm for LDAP
 /core-service=management/security-realm=ManagementRealmHTTPS:add
@@ -51,19 +51,26 @@ batch
 	advanced-filter="(&({{LDAP_NAME_ATTRIBUTE}})(memberOf={{LDAP_ADMIN_GROUP_DN}}))", \
 	connection="ldaps_admin_connection")
 
-/core-service=management/security-realm=ManagementRealm/authorization=ldap:add(connection="ldaps_admin_connection")
+/core-service=management/security-realm=ManagementRealmHTTPS/authentication=truststore:add( \
+	keystore-path="ssl/truststore.jks", \
+	keystore-relative-to="jboss.home.dir", \
+	keystore-password="${VAULT::trustKeystore::trustKeystorePwd::1}")
 
-/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add( \
+/core-service=management/security-realm=ManagementRealmHTTPS/authorization=ldap:add( \
+	connection="ldaps_admin_connection")
+
+/core-service=management/security-realm=ManagementRealmHTTPS/authorization=ldap/group-search=principal-to-group:add( \
 	group-attribute="memberOf", \
 	iterative=true, \
 	group-dn-attribute="dn", \
 	group-name="SIMPLE", \
 	group-name-attribute="cn")
 
-/core-service=management/security-realm=ManagementRealmHTTPS/authentication=truststore:add( \
-	keystore-path="ssl/truststore.jks", \
-	keystore-relative-to="jboss.home.dir", \
-	keystore-password="${VAULT::trustKeystore::trustKeystorePwd::1}")
+/core-service=management/security-realm=ManagementRealmHTTPS:write-attribute( \
+	name=map-groups-to-roles,value=true)
+
+/core-service=management/security-realm=ManagementRealmHTTPS/authentication=local:write-attribute( \
+	name=skip-group-loading,value=true)
 
 ### Secure the management interface
 /core-service=management/management-interface=http-interface:write-attribute( \
