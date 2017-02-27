@@ -34,7 +34,7 @@ batch
 /core-service=management/security-realm=ManagementRealmHTTPS:add
 
 /core-service=management/security-realm=ManagementRealmHTTPS/server-identity=ssl:add( \
-	alias="{{HOSTNAME}}", \
+	alias="appserver", \
 	keystore-path="ssl/keystore.jks", \
 	keystore-relative-to="jboss.home.dir", \
 	keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
@@ -69,6 +69,8 @@ batch
 /core-service=management/security-realm=ManagementRealmHTTPS:write-attribute( \
 	name=map-groups-to-roles,value=true)
 
+/core-service=management/security-realm=ManagementRealmHTTPS/authentication=local:add(default-user="$local")
+
 /core-service=management/security-realm=ManagementRealmHTTPS/authentication=local:write-attribute( \
 	name=skip-group-loading,value=true)
 
@@ -79,6 +81,8 @@ batch
 
 /core-service=management/management-interface=http-interface:undefine-attribute(name=socket-binding)
 
+/core-service=management/management-interface=http-interface:write-attribute(name=security-realm,value=ManagementRealmHTTPS)
+
 ### Configure Undertow for HTTPs
 /core-service=management/security-realm=HTTPSRealm/:add
 
@@ -86,7 +90,7 @@ batch
 	keystore-path="ssl/keystore.jks", \
 	keystore-relative-to="jboss.home.dir", \
 	keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
-	alias="{{HOSTNAME}}", \
+	alias="appserver", \
 	enabled-protocols=["TLSv1.2"])
 
 /subsystem=undertow/server=default-server/https-listener=https:add(socket-binding=https, security-realm=HTTPSRealm)
