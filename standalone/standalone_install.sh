@@ -49,7 +49,7 @@ print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
 
 verify_loc "./ssl/keystore.jks"
 verify_loc "./ssl/truststore.jks"
-verify_loc "./ssl/vault.jks"
+#verify_loc "./ssl/vault.jks"
 
 cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
 rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
@@ -62,7 +62,7 @@ print_line "Start: Gathering user input for vault configuration." ; sleep 2
 
 read -s -p " Password for java keystore: "  java_jks_pass ; print_line
 read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+#read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
 
 print_line "Finish: Gathering user input."
@@ -71,7 +71,7 @@ print_divider
 print_line "Start: Configuring Vault and store secrets." ; sleep 2
 
 vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
-vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
+#vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
 vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
 
 print_line "Finished: Configuring Vault."
