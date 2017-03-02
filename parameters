@@ -14,9 +14,9 @@ ADMIN_GROUP="wheel"
 PATCH_LIST=()
 
 ### LDAP related configurations
-LDAP_URL="ldaps://support1.mustin.vm:636"
+LDAP_URL="ldap://support1.mustin.vm:389"
 LDAP_ADMIN_GROUP="wildfly_admins"
-LDAP_ADMIN_GROUP_DN="cn=wildfly_admins,cn=groups,cn=compat,dc=mustin,dc=vm"
+LDAP_ADMIN_GROUP_DN="cn=wildfly_admins,cn=groups,cn=accounts,dc=mustin,dc=vm"
 LDAP_BIND_DN="uid=wildfly_bind,cn=sysaccounts,cn=etc,dc=mustin,dc=vm"
 LDAP_NAME_ATTRIBUTE="uid"
 LDAP_BASE_DN="dc=mustin,dc=vm"
