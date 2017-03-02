@@ -61,8 +61,8 @@ print_divider
 print_line "Start: Gathering user input for vault configuration." ; sleep 2
 
 read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-#read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
 
 print_line "Finish: Gathering user input."
