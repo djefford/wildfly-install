@@ -33,12 +33,12 @@ batch
 ### Configure Management Realm for LDAP
 /core-service=management/security-realm=ManagementRealmHTTPS:add
 
-/core-service=management/security-realm=ManagementRealmHTTPS/server-identity=ssl:add( \
-	alias="appserver", \
-	keystore-path="ssl/keystore.jks", \
-	keystore-relative-to="jboss.home.dir", \
-	keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
-	enabled-protocols=["TLSv1.2"])
+#/core-service=management/security-realm=ManagementRealmHTTPS/server-identity=ssl:add( \
+#	alias="appserver", \
+#	keystore-path="ssl/keystore.jks", \
+#	keystore-relative-to="jboss.home.dir", \
+#	keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
+#	enabled-protocols=["TLSv1.2"])
 
 /core-service=management/ldap-connection=ldaps_admin_connection:add( \
 	search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}", \
@@ -50,11 +50,6 @@ batch
 	recursive=true, \
 	advanced-filter="(&({{LDAP_NAME_ATTRIBUTE}})(memberOf={{LDAP_ADMIN_GROUP_DN}}))", \
 	connection="ldaps_admin_connection")
-
-/core-service=management/security-realm=ManagementRealmHTTPS/authentication=truststore:add( \
-	keystore-path="ssl/truststore.jks", \
-	keystore-relative-to="jboss.home.dir", \
-	keystore-password="${VAULT::trustKeystore::trustKeystorePwd::1}")
 
 /core-service=management/security-realm=ManagementRealmHTTPS/authorization=ldap:add( \
 	connection="ldaps_admin_connection")
