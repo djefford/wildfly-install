@@ -4,7 +4,7 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
-EnvironmentFile={{WILDFLY_HOME}}/bin/{{INSTANCE_TYPE}}/wildfly.conf
+EnvironmentFile={{WILDFLY_HOME}}/bin/domain/wildfly.conf
 ExecStart={{ADMIN_HOME}}/scripts/wildfly-init.sh start
 ExecStop={{ADMIN_HOME}}/scripts/wildfly-init.sh stop
 SuccessExitStatus=143
