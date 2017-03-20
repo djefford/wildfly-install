@@ -48,8 +48,8 @@ print_divider
 print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
 
 verify_loc "./ssl/keystore.jks"
-verify_loc "./ssl/truststore.jks"
-#verify_loc "./ssl/vault.jks"
+#verify_loc "./ssl/truststore.jks"
+verify_loc "./ssl/vault.jks"
 
 cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
 rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
