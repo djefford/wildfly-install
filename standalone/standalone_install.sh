@@ -150,6 +150,7 @@ mkdir -p ${WILDFLY_HOME}/conf/scripts
 cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
 cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
 cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/jboss-cli.xml ${WILDFLY_HOME}/bin/
 
 print_line "Finish: Placing start-up scripts"
 
