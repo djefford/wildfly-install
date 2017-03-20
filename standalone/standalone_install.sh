@@ -58,12 +58,19 @@ rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
 print_line "Finish: Placing SSL keystore files."
 
 print_divider
-print_line "Start: Gathering user input for vault configuration." ; sleep 2
+print_line "Start: Gathering user input." ; sleep 2
+
+read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
 
 read -s -p " Password for java keystore: "  java_jks_pass ; print_line
 #read -s -p " Password for java truststore: " trust_jks_pass ; print_line
 read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
-read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
+
+if [ "$ldap_go" == "y" ]; then
+  read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
+else
+  read -s -p " Password for local admin account: " local_admin_pass ; print_line
+fi
 
 print_line "Finish: Gathering user input."
 
@@ -72,7 +79,10 @@ print_line "Start: Configuring Vault and store secrets." ; sleep 2
 
 vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
 #vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
-vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
+
+if [ "$ldap_go" == "y" ]; then
+  vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
+fi
 
 print_line "Finished: Configuring Vault."
 
@@ -165,13 +175,24 @@ start_stop_standalone start
 print_line "Finish: Starting wildfly." 
 
 print_divider
-print_line "Start: Configuring standalone instance"
+print_line "Start: Standard configuartion of standalone instance"
 
-execute_standalone_cli ./working/templates/standalone-general.cli
+#execute_standalone_cli ./working/templates/standalone-general.cli
 
-print_line "Finish: Configuring standalone instance"
+print_line "Finish: Standard configuration of standalone instance"
+
+if [ "$ldap_go" == "y" ]; then
+  print_line "Start: External LDAP configuration."
+  execute_standalone_cli ./working/templates/standalone-ldap.cli
+  print_line "Finish: External LDAP configuration."
+else
+  print_line "Start: Add local admin user."
+  add_local_user admin "$local_admin_pass"
+  print_line "Finish: Add local admin user."
+fi
 
 print_divider
+
 print_line "Start: Stopping wildfly." ; sleep 2
 
 start_stop_standalone stop

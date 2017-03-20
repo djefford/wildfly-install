@@ -205,12 +205,12 @@ execute_standalone_cli () {
     --controller=${HOSTNAME}:9990 \
     --file=${cli_script}"
 
-  print_line "I: Executing ${script}."
+  print_line "I: Executing ${cli_script}."
 
   $jboss_cmd ; rc=$?
 
-  rc_eval "${rc}" "I: Successfully executed ${script}." \
-    "E: Execution of ${script} failed."
+  rc_eval "${rc}" "I: Successfully executed ${cli_script}." \
+    "E: Execution of ${cli_script} failed."
 
 }
 
@@ -289,5 +289,32 @@ start_stop_standalone () {
 
   rc_eval "${rc}" "I: Wildfly ${cmd} completed." \
     "E: Wildfly ${cmd} failed."
+
+}
+
+##################################################
+# Adds a local management account to the wildfly 
+#   installation
+# Globals:
+#   WILDFLY_HOME
+# Arguments:
+#   Username
+#   Password
+# Returns:
+#   None
+##################################################
+add_local_user () {
+
+  user=$1
+  pass=$2
+
+  cmd="${WILDFLY_HOME}/bin/add-user.sh -s -u $user -p $pass -r ManagementRealm"
+
+  print_line "I: Adding '$user' local user."
+
+  $cmd ; rc=$?
+
+  rc_eval "${rc}" "I: User '$user' added successfully." \
+    "E: Failed to add user '${user}'."
 
 }

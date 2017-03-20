@@ -1,0 +1,60 @@
+batch
+
+### Configure RBAC
+/core-service=management/access=authorization:write-attribute(name=provider, value=rbac)
+
+### Configure Management Realm for LDAP
+#/core-service=management/security-realm=ManagementRealmHTTPS:add
+
+#/core-service=management/security-realm=ManagementRealmHTTPS/server-identity=ssl:add( \
+#   alias="appserver", \
+#   keystore-path="ssl/keystore.jks", \
+#   keystore-relative-to="jboss.home.dir", \
+#   keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
+#   enabled-protocols=["TLSv1.2"])
+
+/core-service=management/ldap-connection=ldaps_admin_connection:add( \
+    search-credential="${VAULT::ldapAuth::ldapAuthPwd::1}", \
+    url="{{LDAP_URL}}", \
+    search-dn="{{LDAP_BIND_DN}}")
+
+/core-service=management/security-realm=ManagementRealm/authentication=properties:remove()
+
+/core-service=management/security-realm=ManagementRealm/authentication=ldap:add( \
+    base-dn="{{LDAP_BASE_DN}}", \
+    recursive=true, \
+    advanced-filter="(&({{LDAP_NAME_ATTRIBUTE}})(memberOf={{LDAP_ADMIN_GROUP_DN}}))", \
+    connection="ldaps_admin_connection")
+
+/core-service=management/security-realm=ManagementRealm/authorization=properties:remove()
+
+/core-service=management/security-realm=ManagementRealm/authorization=ldap:add( \
+    connection="ldaps_admin_connection")
+
+/core-service=management/security-realm=ManagementRealm/authorization=ldap/group-search=principal-to-group:add( \
+    group-attribute="memberOf", \
+    iterative=true, \
+    group-dn-attribute="dn", \
+    group-name="SIMPLE", \
+    group-name-attribute="cn")
+
+/core-service=management/security-realm=ManagementRealm:write-attribute( \
+    name=map-groups-to-roles,value=true)
+
+/core-service=management/security-realm=ManagementRealm/authentication=local:add(default-user="$local")
+
+/core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute( \
+	name=skip-group-loading,value=true)
+
+### Secure management interface
+/core-service=management/management-interface=http-interface:write-attribute( \
+	name=security-realm,value=ManagementRealm)
+
+### Map Administrator Role
+/core-service=management/access=authorization/role-mapping=Administrator:add
+
+/core-service=management/access=authorization/role-mapping=Administrator/include={{LDAP_ADMIN_GROUP}}:add( \
+    name={{LDAP_ADMIN_GROUP}}, \
+    type=GROUP)
+
+run-batch
