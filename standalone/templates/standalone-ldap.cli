@@ -41,8 +41,6 @@ batch
 /core-service=management/security-realm=ManagementRealm:write-attribute( \
     name=map-groups-to-roles,value=true)
 
-/core-service=management/security-realm=ManagementRealm/authentication=local:add(default-user="$local")
-
 /core-service=management/security-realm=ManagementRealm/authentication=local:write-attribute( \
 	name=skip-group-loading,value=true)
 
