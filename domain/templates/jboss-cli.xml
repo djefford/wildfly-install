@@ -9,7 +9,7 @@
 
     <!-- The default controller to connect to when 'connect' command is executed w/o arguments -->
     <default-controller>
-        <protocol>http-remoting</protocol>
+        <protocol>https-remoting</protocol>
         <host>{{HOSTNAME}}</host>
         <port>9993</port>
     </default-controller>
