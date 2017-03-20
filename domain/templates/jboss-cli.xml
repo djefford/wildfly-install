@@ -5,13 +5,13 @@
 -->
 <jboss-cli xmlns="urn:jboss:cli:2.0">
 
-    <default-protocol use-legacy-override="true">http-remoting</default-protocol>
+    <default-protocol use-legacy-override="true">https-remoting</default-protocol>
 
     <!-- The default controller to connect to when 'connect' command is executed w/o arguments -->
     <default-controller>
         <protocol>http-remoting</protocol>
         <host>{{HOSTNAME}}</host>
-        <port>9990</port>
+        <port>9993</port>
     </default-controller>
     
     <!-- Example controller alias named 'Test'  
