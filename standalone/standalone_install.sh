@@ -178,7 +178,7 @@ print_line "Finish: Starting wildfly."
 print_divider
 print_line "Start: Standard configuartion of standalone instance"
 
-#execute_standalone_cli ./working/templates/standalone-general.cli
+execute_standalone_cli ./working/templates/standalone-general.cli
 
 print_line "Finish: Standard configuration of standalone instance"
 
