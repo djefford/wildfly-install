@@ -150,7 +150,6 @@ mkdir -p ${WILDFLY_HOME}/conf/scripts
 cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
 cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
 cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
-cp ./working/templates/jboss-cli.xml ${WILDFLY_HOME}/bin/
 
 print_line "Finish: Placing start-up scripts"
 
@@ -197,6 +196,9 @@ print_divider
 print_line "Start: Stopping wildfly." ; sleep 2
 
 start_stop_standalone stop
+
+print_line "Placing custom jboss-cli.xml script."
+cp ./working/templates/jboss-cli.xml ${WILDFLY_HOME}/bin/
 
 print_line "Finish: Stopping wildfly."
 
