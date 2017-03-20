@@ -1,271 +1,212 @@
-#!/bin/sh
-############################################################
-# Author: Dustin Jefford
+#!/bin/bash
+##################################################
+# Description: Installs, patches, and configures Wildfly 8.2.X in domain mode
 # 
-# Description: Installs, patches, and configures Wildfly 8.x
-#
-############################################################
+# This script is designed to be called one directory higher than it is placed
+#   in the repository.
+# Author: Dustin Jefford
+##################################################
 
-# Source support files
-source ./utilities.sh 
+source ./utilities
 source ./parameters
 
-# Verify JAVA_HOME
-if [ -z $JAVA_HOME ]; then
-	JAVA_HOME=/usr/bin/java
-fi
+print_divider
+print_line "Starting Wildfly Installation in domain mode."
+print_divider ; sleep 2
 
-# Formatting values
-title="WildflyInstall" 					# String used in log messages related to full script.
-divider=`printf '=%.s' {1..40} ; echo`	# Prints dividing line of "=" in logging output.
+print_line "Start: Verifying directories." ; sleep 2
 
+create_dir "${WILDFLY_HOME}"
+create_dir "${LOGS_DIR}"
 
-echo $divider
-printf " %s\n" "Starting $title Script in ${INSTALL_TYPE} mode..."
-echo $divider
+print_line "Finish: Verifying directories."
 
-# Create initial directory structure.
-printf " %s\n" "Verifying and creating directory structure."
-echo $divider ; sleep 2
+print_divider
+print_line "Start: Unpacking Wildfly Media" ; sleep 2
 
-createDirectoryStructure $HOME_DIR $LOGS_DIR $DEV_HOME
+mkdir -p ./working/media
 
-echo $divider
+extract_zip_media $MAIN_MEDIA ./working/media
 
-# Verify Java installation.
-printf " %s\n" "Verifying Java installation at ${JAVA_HOME}"
-echo $divider ; sleep 2
+# Move unpacked directory to WILDFLY_HOME
+mv ./working/media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
+rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
+  "E: Failed to move media to ${WILDFLY_HOME}."
 
-verifyJava $JAVA_HOME
+print_line "Finish: Unpacking Wildfly Media"
 
-echo $divider
-
-# Deploy JBoss
-printf " %s\n" "Deploying Wildfly from ${MAIN_MEDIA} to ${SOFTWARE_HOME}"
-echo $divider ; sleep 2
-
-# InstallWildfly takes 2 arguments "MAIN_MEDIA" and "SOFTWARE_HOME"
-installWildfly $MAIN_MEDIA $SOFTWARE_HOME
-
-echo $divider
-
-wildfly_dir=$(ls ${SOFTWARE_HOME} | grep -o "wildfly-[0-9]\.[0-9]\..*")		# Wildfly directory
-wildfly_home=${SOFTWARE_HOME}/${wildfly_dir}								# Wildfly Home, full path
-
-# Apply optional patches
-printf " %s\n" "Patching Wildfly."
-echo $divider ; sleep 2
-
-# Loop over patch list and install each patch.
+# If patch files are listed, then install patch
 if [ ${#PATCH_LIST[@]} -gt 0 ]; then
-	for patch in $PATCH_LIST; do
-		patchWildfly $wildfly_home $patch
-	done
+  print_divider
+  print_line "Start patching:"
+  for patch in $PATCH_LIST ; do
+    apply_patch $patch
+  done
+fi
+
+print_divider
+print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
+
+verify_loc "./ssl/keystore.jks"
+#verify_loc "./ssl/truststore.jks"
+verify_loc "./ssl/vault.jks"
+
+cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
+rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
+  "E: Failed to move SSL keystores to ${WILDFLY_HOME}."
+
+print_line "Finish: Placing SSL keystore files."
+
+print_divider
+print_line "Start: Gathering user input." ; sleep 2
+
+read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
+
+read -s -p " Password for java keystore: "  java_jks_pass ; print_line
+#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+
+if [ "$ldap_go" == "y" ]; then
+  read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
 else
-	printf " %s\n" "No patches found. Skipping." ; sleep 2
+  read -s -p " Password for local admin account: " local_admin_pass ; print_line
 fi
 
-echo $divider
+print_line "Finish: Gathering user input."
 
-# Create SSL vaults - keystore.jks, and vault.jks
-printf " %s\n" "Creating SSL keystores (keystore.jks and vault.jks)."
-echo $divider ; sleep 2
+print_divider
+print_line "Start: Configuring Vault and store secrets." ; sleep 2
 
-# Create java keystore for wildfly.
-genKeystore keystore.jks ${HOSTNAME} ${wildfly_home}/ssl
+vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
+#vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
 
-echo $divider
-
-
-# Create vault keystore for wildfly
-genKeystore vault.jks vault ${wildfly_home}/ssl
-
-echo $divider
-
-
-# Configure Vault.
-printf " %s\n" "Configuring vault."
-echo $divider ; sleep 2
-
-# Read in vault password.
-read -s -p " Please provide vault keystore password: " vault_pass
-printf "\n"
-
-# Read in java keystore password
-echo $divider
-read -s -p " Please provide java keystore password: " keystore_pass
-printf "\n"
-
-# Read in truststore keystore password and add it to the vault if (truststore.jks is present)
-if [ -f ./ssl/truststore.jks ]; then
-	echo $divider
-	cp ./ssl/truststore.jks ${wildfly_home}/ssl
-	printf " %s\n" "truststore.jks detected."
-	read -s -p " Please provide truststore password: " truststore_pass
-	printf "\n"
-	vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT trustKeystorePws trustKeystore $truststore_pass add
+if [ "$ldap_go" == "y" ]; then
+  vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
 fi
 
-# Add default keystore information to vault.
-vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass add
+print_line "Finished: Configuring Vault."
 
-# Read in ldap password.
-echo $divider
-read -s -p " Please provide ldap bind account password: " ldap_pass
-printf "\n"
+print_divider
+print_line "Start: Capture masked vault password." ; sleep 2
 
-# Add LDAP Bind account password to the vault.
-vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT ldapAuthPwd ldapAuth $ldap_pass add
+# Grab masked password for vault for later use
+vault_mask_pass=`vault_add_item $vault_jks_pass vaultAuthPwd vaultAuth $vault_jks_pass \
+  | grep -o "\"MASK-.*\""`
 
+# Remove beginning and trailing "
+vault_mask_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$vault_mask_pass")
 
-# Verify input and capture masked password.
-printf " %s\n" "Verifying attribute exists in vault."
-masked_pass=`vaultAddItem ${wildfly_home} ${wildfly_home}/${VAULT_ENC_FILE_DIR} ${wildfly_home}/ssl/vault.jks "${vault_pass}" "$VAULT_SALT" $VAULT_ALIAS $VAULT_ITERATION_COUNT javaKeystorePwd javaKeystore $keystore_pass check | grep -o "\"MASK-.*\""`
+print_line "Finish: Captured masked vault password."
 
-masked_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$masked_pass")
+print_divider
+print_line "Start: Replacing Variables in templates." ; sleep 2
 
-echo $divider
+# Set-up dynamic variables
+short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
+ip_addr=$(hostname -I)
 
-# Substitue variables and configure wildfly.
-printf " %s\n" "Updating configuration files with custom variables."
-echo $divider ; sleep 2
+cp -r domain/templates ./working
 
-printf " %s\n" "Moving ${INSTALL_TYPE} files to working directory..."
-echo $divider ; sleep 2
+for file in `ls ./working/templates`; do
+  file_loc="./working/templates/$file"
+  print_line "Updating ${file_loc}..."
 
-# Move configuration files and cli script to working directory
-# This preserves the original files for future use or comparison.
-cp -r ./${INSTALL_TYPE} ./working
+  replace_var "{{WILDFLY_HOME}}" "$WILDFLY_HOME" "$file_loc"
+  replace_var "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
+  replace_var "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+  replace_var "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
+  replace_var "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
+  replace_var "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
+  replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
 
-# Replace variables in cli and conf templates
-for file in `ls ./working`; do
+  replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
+  replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
 
-	file_loc="./working/$file"
+  replace_var "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
+  replace_var "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
+  replace_var "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
+  replace_var "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
+  replace_var "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
+  replace_var "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
 
-	printf " %s\n" "Updating ${file_loc}..."
+  replace_var "{{VAULT_ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
+  replace_var "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
+  replace_var "{{VAULT_ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
+  replace_var "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
+  replace_var "{{VAULT_KEYSTORE}}" "$VAULT_KEYSTORE" "$file_loc"
 
-	# General replacements
-	replaceVar "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
-	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
-	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
-	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-	replaceVar "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
-	replaceVar "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
-	replaceVar "{{IP_ADDR}}" "$IP_ADDR" "$file_loc"
-
-	# Vault replacements
-	replaceVar "{{ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
-	replaceVar "{{MASKED_VAULT_PASSWORD}}" "${masked_pass}" "$file_loc"
-	replaceVar "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
-	replaceVar "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
-	replaceVar "{{ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
-
-	# LDAP replacements
-	replaceVar "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
-	replaceVar "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
-	replaceVar "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
-	replaceVar "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
-	replaceVar "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
-	replaceVar "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
-
-	# Domain Install replacements
-	replaceVar "{{SHORT_HOSTNAME}}" "$SHORT_HOSTNAME" "$file_loc"
+  replace_var "{{VAULT_MASKED_PASSWORD}}" "$vault_mask_pass" "$file_loc"
 
 done
 
-printf " %s\n" "Setting up configuration file in ${wildfly_home}/bin/${INSTALL_TYPE}."
-mkdir ${wildfly_home}/bin/${INSTALL_TYPE}
-cp ./working/wildfly.conf ${wildfly_home}/bin/${INSTALL_TYPE}
+print_line "Finish: Variable replacement"
 
-if [ -f ./working/jboss-cli.xml ]; then
-	cp ./working/jboss-cli.xml ${wildfly_home}/bin/
-fi
+print_divider
+print_line "Start: Placing start-up scripts" ; sleep 2
 
-if [ -f ./working/jboss-cli-logging.properties ]; then
-	cp ./working/jboss-cli-logging.properties ${wildfly_home}/bin/
-fi
+mkdir -p ${WILDFLY_HOME}/conf/domain
+mkdir -p ${WILDFLY_HOME}/conf/scripts
 
-printf " %s\n" "Completed setting up ${wildfly_home}/bin/${INSTALL_TYPE}."
+cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/domain
+cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
 
-echo $divider
+print_line "Finish: Placing start-up scripts"
 
-# Update and move scripts.
-printf " %s\n" "Updating script files."
-echo $divider ; sleep 2
+print_divider
+print_line "Start: Updating permissions." ; sleep 2
 
-printf " %s\n" "Moving script files to working_scripts directory..."
-echo $divider ; sleep 2
+mkdir -p ${WILDFLY_HOME}/conf/crontabs
 
-# Move scripts to working_scripts directory
-cp -r ./scripts ./working_scripts
+cp ./working/templates/wildflyPerms.sh ${WILDFLY_HOME}/conf/crontabs/
 
-# Replace variables
-for file in `ls ./working_scripts` ; do
+${WILDFLY_HOME}/conf/crontabs/wildflyPerms.sh ; rc=$?
 
-	file_loc="./working_scripts/$file"
+rc_eval "${rc}" "I: Successfully updated permissions." \
+  "E: Permissions updates failed."
 
-	printf " %s\n" "Updating ${file_loc}..."
+print_line "Finish: Updating permissions"
 
-	# General replacements
-	replaceVar "{{WILDFLY_HOME}}" "${wildfly_home}" "$file_loc"
-	replaceVar "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-	replaceVar "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
-	replaceVar "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
-	replaceVar "{{INSTALL_TYPE}}" "$INSTALL_TYPE" "$file_loc"
-	replaceVar "{{ADMIN_HOME}}" "$ADMIN_HOME" "$file_loc"
+print_divider
+print_line "Start: Starting wildfly." ; sleep 2
 
-done
+start_stop_standalone start
 
-printf " %s\n" "Setting up script files in ${ADMIN_HOME}/scripts."
-placeScripts ./working_scripts ${ADMIN_HOME}/scripts
+print_line "Finish: Starting wildfly." 
 
-printf " %s\n" "Completed setting up script files in ${ADMIN_HOME}/scripts."
+print_divider
+print_line "Start: Standard configuartion of domain instance"
 
-echo $divider
+#execute_standalone_cli ./working/templates/standalone-general.cli
 
-# Running permissions script
-printf " %s\n" "Updating permissions..."
-echo $divider ; sleep 2
+print_line "Finish: Standard configuration of domain instance"
 
-${ADMIN_HOME}/scripts/wildflyPerms.sh
-
-echo $divider
-
-# Start Wildfly, in preparation to run the CLI scripts
-printf " %s\n" "Starting Wildfly..."
-echo $divider ; sleep 2
-
-startWildfly ${wildfly_home} ${ADMIN_HOME}/scripts/wildfly-init.sh ${INSTALL_TYPE} ; rc=$?
-
-if [ "$rc" != 0 ] ; then
-	printf " %s\n" "Unable to start Wildfly."
-fi
-
-echo $divider
-
-# Apply CLI scripts
-printf " %s\n" "Applying CLI scripts."
-echo $divider ; sleep 2
-
-for file_loc in `ls ./working/*.cli`; do
-
-	executeCLI $wildfly_home "batch" $file_loc
-
-done
-
-# Stop Wildfly and finish the script
-printf " %s\n" "Stopping wildfly..."
-echo $divider ; sleep 2
-
-if [ "$INSTALL_TYPE" = "standalone" ]; then
-	executeCLI $wildfly_home "command" "shutdown"
+if [ "$ldap_go" == "y" ]; then
+  print_line "Start: External LDAP configuration."
+#  execute_standalone_cli ./working/templates/standalone-ldap.cli
+  print_line "Finish: External LDAP configuration."
 else
-	executeCLI $wildfly_home "command" "shutdown --host=$SHORT_HOSTNAME"
+  print_line "Start: Add local admin user."
+  add_local_user admin "$local_admin_pass"
+  print_line "Finish: Add local admin user."
 fi
 
+print_divider
 
-printf " %s\n" "Script completed successfully."
-echo $divider
+print_line "Start: Stopping wildfly." ; sleep 2
 
+start_stop_standalone stop
+
+print_line "Placing custom jboss-cli.xml script."
+cp ./working/templates/jboss-cli.xml ${WILDFLY_HOME}/bin/
+
+print_line "Finish: Stopping wildfly."
+
+print_divider
+
+print_line "Wildfly Installation completed in domain mode."
+
+print_divider
+print_divider
 
 
