@@ -32,9 +32,10 @@ if [ -d "$WILDFLY_HOME" ] && [ -d "$LOG_ROOT" ] ; then
 	chmod -R ugo-w $WILDFLY_HOME/bin
 	find $WILDFLY_HOME/bin -name "*.sh" | xargs chmod ug+x
 
-	# Add additional lines below if more standalone instances are configured
-	find $WILDFLY_HOME/bin -type d -name "{{INSTANCE_TYPE}}" | xargs chmod -R ug+w
-	
+	find $WILDFLY_HOME/conf/ -type d -name "domain" | xargs chmod -R ug+w
+  find $WILDFLY_HOME/conf/ -name "*.conf" | xargs chmod 755	
+  find $WILDFLY_HOME/conf/ -name "*.sh" | xargs chmod ug+x
+
 	# Set vault permissions to allow admin group to write
 	if [ "$(ls -A $WILDFLY_HOME)" ] ; then
 		find $WILDFLY_HOME/vault -name "*.dat" | xargs chmod g+w
