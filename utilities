@@ -270,7 +270,7 @@ apply_patch () {
 ##################################################
 # Starts or stops Wildfly on a standalone install.
 # Globals:
-#   WILDFly_HOME
+#   WILDFLY_HOME
 # Arguments:
 #   Start or Stop
 # Returns:
@@ -316,5 +316,30 @@ add_local_user () {
 
   rc_eval "${rc}" "I: User '$user' added successfully." \
     "E: Failed to add user '${user}'."
+
+}
+
+##################################################
+# Starts or stops Wildfly on a domain install.
+# Globals:
+#   WILDFLY_HOME
+# Arguments:
+#   Start or Stop
+# Returns:
+#   None
+##################################################
+start_stop_domain () {
+
+  cmd="${1}"
+  export JBOSS_CONF=$WILDFLY_HOME/conf/domain/wildfly.conf
+  
+  jboss_cmd="${WILDFLY_HOME}/conf/scripts/wildfly-init.sh $cmd"
+
+  print_line "I: Beginning Wildfly ${cmd}."
+  
+  $jboss_cmd ; rc=$?
+
+  rc_eval "${rc}" "I: Wildfly ${cmd} completed." \
+    "E: Wildfly ${cmd} failed."
 
 }
