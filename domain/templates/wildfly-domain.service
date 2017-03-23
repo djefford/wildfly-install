@@ -4,9 +4,9 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
-EnvironmentFile={{WILDFLY_HOME}}/bin/domain/wildfly.conf
-ExecStart={{ADMIN_HOME}}/scripts/wildfly-init.sh start
-ExecStop={{ADMIN_HOME}}/scripts/wildfly-init.sh stop
+EnvironmentFile={{WILDFLY_HOME}}/conf/domain/wildfly.conf
+ExecStart={{WILDFLY_HOME}}/conf/scripts/wildfly-init.sh start
+ExecStop={{WILDFLY_HOME}}/conf/scripts/wildfly-init.sh stop
 SuccessExitStatus=143
 
 [Install]
