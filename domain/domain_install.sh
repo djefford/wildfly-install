@@ -149,7 +149,7 @@ mkdir -p ${WILDFLY_HOME}/conf/scripts
 
 cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/domain
 cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
-cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/wildfly-domain.service ${WILDFLY_HOME}/conf/scripts
 
 print_line "Finish: Placing start-up scripts"
 
@@ -170,7 +170,7 @@ print_line "Finish: Updating permissions"
 print_divider
 print_line "Start: Starting wildfly." ; sleep 2
 
-start_stop_standalone start
+start_stop_domain start
 
 print_line "Finish: Starting wildfly." 
 
@@ -195,7 +195,7 @@ print_divider
 
 print_line "Start: Stopping wildfly." ; sleep 2
 
-start_stop_standalone stop
+start_stop_domain stop
 
 print_line "Placing custom jboss-cli.xml script."
 cp ./working/templates/jboss-cli.xml ${WILDFLY_HOME}/bin/
