@@ -177,13 +177,13 @@ print_line "Finish: Starting wildfly."
 print_divider
 print_line "Start: Standard configuartion of domain instance"
 
-#execute_standalone_cli ./working/templates/standalone-general.cli
+execute_cli_script ./working/templates/domain-general.cli
 
 print_line "Finish: Standard configuration of domain instance"
 
 if [ "$ldap_go" == "y" ]; then
   print_line "Start: External LDAP configuration."
-#  execute_standalone_cli ./working/templates/standalone-ldap.cli
+#  execute_cli_script ./working/templates/standalone-ldap.cli
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."
