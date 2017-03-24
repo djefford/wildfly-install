@@ -56,7 +56,6 @@ batch
 	name=port,value="${jboss.management.native.port:9993}")
 
 /host=master/core-service=management/management-interface=http-interface:undefine-attribute(name=port)
-/host=master/core-service=management/management-interface=native-interface:undefine-attribute(name=port)
 
 ### Configure Undertow for HTTPs
 /host=master/core-service=management/security-realm=HTTPSRealm/:add
@@ -78,6 +77,13 @@ batch
 	socket-binding=https,security-realm=HTTPSRealm)
 
 ### Remove default server groups
+/server-group=main-server-group:stop-servers
+/server-group=other-server-group:stop-servers
+
+/host=master/server-config=server-one:remove
+/host=master/server-config=server-two:remove
+/host=master/server-config=server-three:remove
+
 /server-group=main-server-group:remove()
 /server-group=other-server-group:remove()
 
