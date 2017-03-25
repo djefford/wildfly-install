@@ -184,6 +184,8 @@ print_line "Finish: Starting wildfly."
 print_divider
 print_line "Start: Standard configuartion of domain instance"
 
+execute_cli_command "/server-group=main-server-group:stop-servers"
+execute_cli_command "/server-group=other-server-group:stop-servers"
 execute_cli_script ./working/templates/domain-general.cli
 
 print_line "Finish: Standard configuration of domain instance"
