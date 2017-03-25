@@ -224,7 +224,7 @@ execute_cli_script () {
 # Returns:
 #   None
 ##################################################
-execute_standalone_command () {
+execute_cli_command () {
 
   cli_command="$1"
 
