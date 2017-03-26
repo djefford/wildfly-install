@@ -67,7 +67,7 @@ print_line "Start: Gathering user input." ; sleep 2
 #read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 
 # Insert test values [Testing only]
-ldap_go="n"
+ldap_go="y"
 java_jks_pass="changeit"
 vault_jks_pass="changeit"
 
@@ -182,17 +182,17 @@ start_stop_domain start
 print_line "Finish: Starting wildfly." 
 
 print_divider
-print_line "Start: Standard configuartion of domain instance"
+print_line "Start: Configuartion of domain install"
 
 execute_cli_command "/server-group=main-server-group:stop-servers"
 execute_cli_command "/server-group=other-server-group:stop-servers"
 execute_cli_script ./working/templates/domain-general.cli
 
-print_line "Finish: Standard configuration of domain instance"
+print_line "Finish: Configuration of domain install"
 
 if [ "$ldap_go" == "y" ]; then
   print_line "Start: External LDAP configuration."
-#  execute_cli_script ./working/templates/standalone-ldap.cli
+  execute_cli_script ./working/templates/domain-ldap.cli
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."
@@ -200,6 +200,9 @@ else
   print_line "Finish: Add local admin user."
 fi
 
+execute_cli_command "/host=master:write-attribute(name=name,value=\"$short_hostname\")"
+
+print_line "Finish: Configuration of domain install"
 print_divider
 
 print_line "Start: Stopping wildfly." ; sleep 2
