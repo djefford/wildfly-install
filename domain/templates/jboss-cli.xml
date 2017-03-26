@@ -11,7 +11,7 @@
     <default-controller>
         <protocol>https-remoting</protocol>
         <host>{{HOSTNAME}}</host>
-        <port>9993</port>
+        <port>9443</port>
     </default-controller>
     
     <!-- Example controller alias named 'Test'  
