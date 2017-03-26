@@ -60,23 +60,23 @@ print_line "Finish: Placing SSL keystore files."
 print_divider
 print_line "Start: Gathering user input." ; sleep 2
 
-#read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
+read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
 
-#read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for java keystore: "  java_jks_pass ; print_line
+read -s -p " Password for java truststore: " trust_jks_pass ; print_line
 #read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 
 # Insert test values [Testing only]
-ldap_go="y"
-java_jks_pass="changeit"
-vault_jks_pass="changeit"
+#ldap_go="y"
+#java_jks_pass="changeit"
+#vault_jks_pass="changeit"
 
 if [ "$ldap_go" == "y" ]; then
-#  read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
-  ldap_bind_pass="wildfly"
+  read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
+#  ldap_bind_pass="wildfly"
 else
-#  read -s -p " Password for local admin account: " local_admin_pass ; print_line
-  local_admin_pass="wildfly"
+  read -s -p " Password for local admin account: " local_admin_pass ; print_line
+#  local_admin_pass="wildfly"
 fi
 
 print_line "Finish: Gathering user input."
