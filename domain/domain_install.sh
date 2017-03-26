@@ -63,8 +63,8 @@ print_line "Start: Gathering user input." ; sleep 2
 read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
 
 read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-#read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
+#read -s -p " Password for java truststore: " trust_jks_pass ; print_line
+read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 
 # Insert test values [Testing only]
 #ldap_go="y"
