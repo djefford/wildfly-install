@@ -50,10 +50,9 @@ batch
     keystore-password="${VAULT::javaKeystore::javaKeystorePwd::1}", \
     enabled-protocols=["TLSv1.2"])
 
+
 /host=master/core-service=management/management-interface=http-interface:write-attribute( \
-	name=secure-port,value="${jboss.management.http.port:9443}")
-/host=master/core-service=management/management-interface=native-interface:write-attribute( \
-	name=port,value="${jboss.management.native.port:9993}")
+	name=secure-port,value="9443")
 
 /host=master/core-service=management/management-interface=http-interface:undefine-attribute(name=port)
 
