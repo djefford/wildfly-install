@@ -86,7 +86,4 @@ batch
 /server-group=main-server-group:remove()
 /server-group=other-server-group:remove()
 
-### Update Hostname
-/host=master:write-attribute(name=name,value="{{SHORT_HOSTNAME}}")
-
 run-batch
