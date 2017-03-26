@@ -232,12 +232,12 @@ execute_cli_command () {
     --controller=${HOSTNAME}:9990 \
     --command=${cli_command}"
 
-  print_line "I: Executing command \"${command}\"."
+  print_line "I: Executing command \"${cli_command}\"."
 
   $jboss_cmd ; rc=$?
 
-  rc_eval "${rc}" "I: Successfully executed command \"${command}\"." \
-    "E: Execution of command \"${command}\" failed."
+  rc_eval "${rc}" "I: Successfully executed command \"${cli_command}\"." \
+    "E: Execution of command \"${cli_command}\" failed."
 
 }
 
