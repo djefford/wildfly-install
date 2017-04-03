@@ -13,7 +13,7 @@ print_line () {
   message=$1
 
   format=" %s\n"
-  printf "${format}" "$1" 
+  printf "${format}" "$1"
 
 }
 
@@ -33,7 +33,7 @@ verify_loc () {
   else
     print_line "E: Unable to locate ${location}."
     exit 127
-  fi 
+  fi
 
 }
 
@@ -190,7 +190,7 @@ vault_add_item () {
 ##################################################
 # Execute Wildfly CLI script on a standalone instance.
 # Globals:
-#   WILDFLY_HOME
+#   ip_addr
 #   HOSTNAME
 # Arguments:
 #   Script
@@ -202,7 +202,7 @@ execute_cli_script () {
   cli_script="$1"
 
   jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh -c \
-    --controller=${HOSTNAME}:9990 \
+    --controller=${ip_addr}:9990 \
     --file=${cli_script}"
 
   print_line "I: Executing ${cli_script}."
@@ -281,11 +281,11 @@ start_stop_standalone () {
 
   cmd="${1}"
   export JBOSS_CONF=$WILDFLY_HOME/conf/standalone/wildfly.conf
-  
+
   jboss_cmd="${WILDFLY_HOME}/conf/scripts/wildfly-init.sh $cmd"
 
   print_line "I: Beginning Wildfly ${cmd}."
-  
+
   $jboss_cmd ; rc=$?
 
   rc_eval "${rc}" "I: Wildfly ${cmd} completed." \
@@ -294,7 +294,7 @@ start_stop_standalone () {
 }
 
 ##################################################
-# Adds a local management account to the wildfly 
+# Adds a local management account to the wildfly
 #   installation
 # Globals:
 #   WILDFLY_HOME
@@ -333,11 +333,11 @@ start_stop_domain () {
 
   cmd="${1}"
   export JBOSS_CONF=$WILDFLY_HOME/conf/domain/wildfly.conf
-  
+
   jboss_cmd="${WILDFLY_HOME}/conf/scripts/wildfly-init.sh $cmd"
 
   print_line "I: Beginning Wildfly ${cmd}."
-  
+
   $jboss_cmd ; rc=$?
 
   rc_eval "${rc}" "I: Wildfly ${cmd} completed." \
