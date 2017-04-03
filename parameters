@@ -2,7 +2,7 @@
 WILDFLY_HOME="/opt/software/wildfly"
 LOGS_DIR="/opt/logs/wildfly"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
-MAIN_MEDIA="/Vagrant/wildfly-8.2.0.Final.zip"
+MAIN_MEDIA="/vagrant/wildfly-8.2.0.Final.zip"
 HOSTNAME="vagrant1.mustin.box"
 
 # Wildfly Configuration Variables
