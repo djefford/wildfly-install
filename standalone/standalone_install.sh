@@ -1,7 +1,7 @@
 #!/bin/bash
 ##################################################
 # Description: Installs, patches, and configures Wildfly 8.2.X in standalone mode
-# 
+#
 # This script is designed to be called one directory higher than it is placed
 #   in the repository.
 # Author: Dustin Jefford
@@ -29,7 +29,7 @@ mkdir -p ./working/media
 extract_zip_media $MAIN_MEDIA ./working/media
 
 # Move unpacked directory to WILDFLY_HOME
-mv ./working/media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
+mv ./working/media/wildfly-8.2.1.Final/* $WILDFLY_HOME ; rc=$?
 rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
   "E: Failed to move media to ${WILDFLY_HOME}."
 
@@ -172,7 +172,7 @@ print_line "Start: Starting wildfly." ; sleep 2
 
 start_stop_standalone start
 
-print_line "Finish: Starting wildfly." 
+print_line "Finish: Starting wildfly."
 
 print_divider
 print_line "Start: Standard configuartion of standalone instance"
@@ -208,5 +208,3 @@ print_line "Wildfly Installation completed in standalone mode."
 
 print_divider
 print_divider
-
-
