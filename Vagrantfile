@@ -8,6 +8,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant"
   config.vm.provision "shell", inline: <<-SHELL
     yum update -y
-    yum install -y java-1.8.0-openjdk unzip
+    yum install -y java-1.8.0-openjdk unzip net-tools
+    useradd -s /bin/bash -d /home/wildfly wildfly
   SHELL
 end
