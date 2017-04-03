@@ -3,7 +3,7 @@ WILDFLY_HOME="/opt/software/wildfly"
 LOGS_DIR="/opt/logs/wildfly"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 MAIN_MEDIA="/vagrant/wildfly-8.2.1.Final.zip"
-HOSTNAME="localhost"
+HOSTNAME="vagrant1.mustin.box"
 
 # Wildfly Configuration Variables
 SMTP_SERVER="mail.google.com"
