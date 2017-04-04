@@ -218,19 +218,20 @@ execute_cli_script () {
 ##################################################
 # Execute Wildfly CLI command on a standalone instance.
 # Globals:
-#   WILDFLY_HOME
 #   HOSTNAME
 # Arguments:
+#   IP Address
 #   Command
 # Returns:
 #   None
 ##################################################
 execute_cli_command () {
 
-  cli_command="$1"
+  ip_addr="$1"
+  cli_command="$2"
 
   jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh -c \
-    --controller=${HOSTNAME}:9990 \
+    --controller=${ip_addr}:9990 \
     --command=${cli_command}"
 
   print_line "I: Executing command \"${cli_command}\"."

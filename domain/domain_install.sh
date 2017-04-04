@@ -1,7 +1,7 @@
 #!/bin/bash
 ##################################################
 # Description: Installs, patches, and configures Wildfly 8.2.X in domain mode
-# 
+#
 # This script is designed to be called one directory higher than it is placed
 #   in the repository.
 # Author: Dustin Jefford
@@ -29,7 +29,7 @@ mkdir -p ./working/media
 extract_zip_media $MAIN_MEDIA ./working/media
 
 # Move unpacked directory to WILDFLY_HOME
-mv ./working/media/wildfly-8.2.0.Final/* $WILDFLY_HOME ; rc=$?
+mv ./working/media/wildfly-8.2.1.Final/* $WILDFLY_HOME ; rc=$?
 rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
   "E: Failed to move media to ${WILDFLY_HOME}."
 
@@ -110,7 +110,7 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-ip_addr=$(hostname -I)
+ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
 
 cp -r domain/templates ./working
 
@@ -179,20 +179,20 @@ print_line "Start: Starting wildfly." ; sleep 2
 
 start_stop_domain start
 
-print_line "Finish: Starting wildfly." 
+print_line "Finish: Starting wildfly."
 
 print_divider
 print_line "Start: Configuartion of domain install"
 
-execute_cli_command "/server-group=main-server-group:stop-servers"
-execute_cli_command "/server-group=other-server-group:stop-servers"
-execute_cli_script ./working/templates/domain-general.cli
+execute_cli_command ${ip_addr} "/server-group=main-server-group:stop-servers"
+execute_cli_command ${ip_addr} "/server-group=other-server-group:stop-servers"
+execute_cli_script ${ip_addr} ./working/templates/domain-general.cli
 
 print_line "Finish: Configuration of domain install"
 
 if [ "$ldap_go" == "y" ]; then
   print_line "Start: External LDAP configuration."
-  execute_cli_script ./working/templates/domain-ldap.cli
+  execute_cli_script ${ip_addr} ./working/templates/domain-ldap.cli
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."
@@ -200,7 +200,7 @@ else
   print_line "Finish: Add local admin user."
 fi
 
-execute_cli_command "/host=master:write-attribute(name=name,value=\"$short_hostname\")"
+execute_cli_command ${ip_addr} "/host=master:write-attribute(name=name,value=\"$short_hostname\")"
 
 print_line "Finish: Configuration of domain install"
 print_divider
@@ -220,5 +220,3 @@ print_line "Wildfly Installation completed in domain mode."
 
 print_divider
 print_divider
-
-
