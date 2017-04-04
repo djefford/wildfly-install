@@ -14,6 +14,7 @@ print_divider
 print_line "Starting Wildfly Installation in standalone mode."
 print_divider ; sleep 2
 
+
 print_line "Start: Verifying directories." ; sleep 2
 
 create_dir "${WILDFLY_HOME}"
@@ -103,7 +104,7 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-export ip_addr=$(hostname -I)
+ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
 
 cp -r standalone/templates ./working
 
@@ -177,13 +178,13 @@ print_line "Finish: Starting wildfly."
 print_divider
 print_line "Start: Standard configuartion of standalone instance"
 
-execute_cli_script ./working/templates/standalone-general.cli
+execute_cli_script ${ip_addr} ./working/templates/standalone-general.cli
 
 print_line "Finish: Standard configuration of standalone instance"
 
 if [ "$ldap_go" == "y" ]; then
   print_line "Start: External LDAP configuration."
-  execute_cli_script ./working/templates/standalone-ldap.cli
+  execute_cli_script ${ip_addr} ./working/templates/standalone-ldap.cli
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."

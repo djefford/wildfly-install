@@ -190,16 +190,17 @@ vault_add_item () {
 ##################################################
 # Execute Wildfly CLI script on a standalone instance.
 # Globals:
-#   ip_addr
 #   HOSTNAME
 # Arguments:
+#   IP Address
 #   Script
 # Returns:
 #   None
 ##################################################
 execute_cli_script () {
 
-  cli_script="$1"
+  ip_addr="$1"
+  cli_script="$2"
 
   jboss_cmd="${WILDFLY_HOME}/bin/jboss-cli.sh -c \
     --controller=${ip_addr}:9990 \
