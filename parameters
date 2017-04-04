@@ -8,7 +8,7 @@ HOSTNAME="vagrant1.mustin.box"
 # Wildfly Configuration Variables
 SMTP_SERVER="mail.google.com"
 WILDFLY_USER="wildfly"
-ADMIN_GROUP="wheel"
+ADMIN_GROUP="vagrant"
 
 # (Optional) Patch List
 PATCH_LIST=()
