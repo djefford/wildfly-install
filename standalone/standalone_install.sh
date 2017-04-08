@@ -105,6 +105,7 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
 ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+#ip_addr="192.168.1.24"
 
 cp -r standalone/templates ./working
 
