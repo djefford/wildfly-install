@@ -5,7 +5,6 @@ Vagrant.configure("2") do |config|
   config.vm.base_mac = "5254001fdbb7"
   config.vm.box = "centos/7"
   config.vm.hostname = "vagrant1.mustin.box"
-  #config.vm.network "private_network", type: "dhcp"
   config.vm.synced_folder ".", "/vagrant"
   config.vm.provision "shell", inline: <<-SHELL
     yum update -y
