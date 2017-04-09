@@ -189,7 +189,7 @@ if [ "$ldap_go" == "y" ]; then
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."
-  add_local_user admin "$local_admin_pass" "ManagementRealm"
+  add_local_user admin "$local_admin_pass"
   print_line "Finish: Add local admin user."
 fi
 
