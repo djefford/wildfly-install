@@ -303,6 +303,7 @@ start_stop_standalone () {
 # Arguments:
 #   Username
 #   Password
+#   Realm
 # Returns:
 #   None
 ##################################################
@@ -310,15 +311,16 @@ add_local_user () {
 
   user=$1
   pass=$2
+  realm=$3
 
-  cmd="${WILDFLY_HOME}/bin/add-user.sh -s -u $user -p $pass -r ManagementRealm"
+  cmd="${WILDFLY_HOME}/bin/add-user.sh -s -u $user -p $pass -r $realm"
 
-  print_line "I: Adding '$user' local user."
+  print_line "I: Adding '$user' local user to $realm."
 
   $cmd ; rc=$?
 
-  rc_eval "${rc}" "I: User '$user' added successfully." \
-    "E: Failed to add user '${user}'."
+  rc_eval "${rc}" "I: User '$user' added successfully to $realm." \
+    "E: Failed to add user '${user}' to $realm."
 
 }
 

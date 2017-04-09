@@ -104,8 +104,8 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
-#ip_addr="192.168.1.24"
+#ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+ip_addr="192.168.1.24"
 
 cp -r standalone/templates ./working
 
@@ -189,7 +189,7 @@ if [ "$ldap_go" == "y" ]; then
   print_line "Finish: External LDAP configuration."
 else
   print_line "Start: Add local admin user."
-  add_local_user admin "$local_admin_pass"
+  add_local_user admin "$local_admin_pass" "ManagementRealm"
   print_line "Finish: Add local admin user."
 fi
 
