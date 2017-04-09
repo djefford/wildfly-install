@@ -3,7 +3,7 @@ WILDFLY_HOME="/opt/software/wildfly"
 LOGS_DIR="/opt/logs/wildfly"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 MAIN_MEDIA="/vagrant/wildfly-8.2.1.Final.zip"
-HOSTNAME="vagrant1.mustin.box"
+HOSTNAME="slave.vagrant.box"
 
 # Wildfly Configuration Variables
 SMTP_SERVER="mail.google.com"
@@ -20,6 +20,8 @@ LDAP_ADMIN_GROUP_DN="cn=wildfly_admins,cn=Group,dc=mustin,dc=vm"
 LDAP_BIND_DN="cn=admin,dc=mustin,dc=vm"
 LDAP_NAME_ATTRIBUTE="uid"
 LDAP_BASE_DN="dc=mustin,dc=vm"
+
+LDAP_SECONDARY_DN="cn=secondary_wildfly,dc=mustin,dc=vm"
 
 # Vault related information
 VAULT_ENC_FILE_DIR="${WILDFLY_HOME}/vault/"
