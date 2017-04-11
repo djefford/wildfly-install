@@ -61,6 +61,7 @@ print_divider
 print_line "Start: Gathering user input." ; sleep 2
 
 read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
+read -p " Will this server be a domain slave server? (y/n): " slave ; print_line
 
 read -s -p " Password for java keystore: "  java_jks_pass ; print_line
 #read -s -p " Password for java truststore: " trust_jks_pass ; print_line
@@ -74,9 +75,11 @@ read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
 if [ "$ldap_go" == "y" ]; then
   read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
 #  ldap_bind_pass="wildfly"
+  read -s -p " Password for LDAP secondary account: " ldap_secondary_pass ; print_line
 else
   read -s -p " Password for local admin account: " local_admin_pass ; print_line
 #  local_admin_pass="wildfly"
+  read -s -p " Password for local secondary account: " local_secondary_pass ; print_line
 fi
 
 print_line "Finish: Gathering user input."
@@ -90,6 +93,8 @@ vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
 if [ "$ldap_go" == "y" ]; then
   vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
 fi
+
+vault_add_item $vault_jks_pass secondaryNodeAcctPwd secondaryNodeAcct $local_secondary_pass
 
 print_line "Finished: Configuring Vault."
 
@@ -110,7 +115,14 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+#ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+ip_addr="192.168.1.30"
+
+if [ "$ldap_go" == "y" ]; then
+  secondary_acct="$LDAP_SECONDARY_DN"
+else
+  secondary_acct="secondaryAcct"
+fi
 
 cp -r domain/templates ./working
 
@@ -125,6 +137,7 @@ for file in `ls ./working/templates`; do
   replace_var "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
   replace_var "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
   replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
+  replace_var "{{MASTER_HOSTNAME}}" "$MASTER_HOSTNAME" "$file_loc"
 
   replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
   replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
@@ -135,6 +148,7 @@ for file in `ls ./working/templates`; do
   replace_var "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
   replace_var "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
   replace_var "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
+  replace_var "{{LDAP_SECONDARY_DN}}" "$secondary_acct" "$file_loc"
 
   replace_var "{{VAULT_ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
   replace_var "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
@@ -178,6 +192,7 @@ print_divider
 print_line "Start: Starting wildfly." ; sleep 2
 
 start_stop_domain start
+print_line "Waiting for start-up to complete." ; sleep 10
 
 print_line "Finish: Starting wildfly."
 
@@ -195,9 +210,10 @@ if [ "$ldap_go" == "y" ]; then
   execute_cli_script ${ip_addr} ./working/templates/domain-ldap.cli
   print_line "Finish: External LDAP configuration."
 else
-  print_line "Start: Add local admin user."
+  print_line "Start: Configure local users."
   add_local_user admin "$local_admin_pass"
-  print_line "Finish: Add local admin user."
+  add_local_user $secondary_acct "$local_secondary_pass"
+  print_line "Finish: Configure loacl users."
 fi
 
 execute_cli_command ${ip_addr} "/host=master:write-attribute(name=name,value=\"$short_hostname\")"
