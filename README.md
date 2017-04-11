@@ -11,3 +11,5 @@ These scripts will install and configure Wildfly 8.2.0 on a RHEL 7 based system.
 3. Execute the appropriate standalone_install.sh or domain_install.sh script.
 
 ## Super awesome update
+
+## Update 2
