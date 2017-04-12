@@ -116,7 +116,7 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
 #ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
-ip_addr="192.168.1.30"
+ip_addr="192.168.1.31"
 
 if [ "$ldap_go" == "y" ]; then
   secondary_acct="$LDAP_SECONDARY_DN"
@@ -197,7 +197,7 @@ print_line "Waiting for start-up to complete." ; sleep 10
 print_line "Finish: Starting wildfly."
 
 print_divider
-print_line "Start: Configuartion of domain install"
+print_line "Start: Configuration of domain install"
 
 execute_cli_command ${ip_addr} "/server-group=main-server-group:stop-servers"
 execute_cli_command ${ip_addr} "/server-group=other-server-group:stop-servers"
