@@ -1,0 +1,28 @@
+batch
+
+#/host=slave/core-service=management/security-realm=ManagementRealm/server-identity=ssl:remove
+/host=slave/core-service=management/security-realm=ManagementRealm/authentication=ldap:remove
+/host=slave/core-service=management/security-realm=ManagementRealm/authentication=local:remove
+/host=slave/core-service=management/security-realm=ManagementRealm/authorization=ldap:remove
+/host=slave/core-service=management/security-realm=ManagementRealm:undefine-attribute(name=map-groups-to-roles)
+/host=slave/core-service=management/security-realm=ManagementRealm/\
+    server-identity=secret:add(value="${VAULT::secondaryNodeAcct::secondaryNodeAcctPwd::1}")
+
+#/host=slave/core-service=management/management-interface=native-interface:undefine-attribute( \
+#    name=security-realm)
+#/host=slave/core-service=management/management-interface=http-interface:undefine-attribute( \
+#    name=secure-port)
+#/host=slave/core-service=management/management-interface=http-interface:undefine-attribute( \
+#    name=security-realm)
+#/host=slave/core-service=management/management-interface=http-interface:remove
+#/host=slave/core-service=management/management-interface=native-interface:write-attribute( \
+#    name=security-realm,value=ManagementRealm)
+
+### Add Domain Controller
+/host=slave:write-remote-domain-controller( \
+    host="master.vagrant.box", \
+    port="${jboss.domain.master.port:9999}", \
+    security-realm="ManagementRealm", \
+    username="secondary_acct")
+
+run-batch
