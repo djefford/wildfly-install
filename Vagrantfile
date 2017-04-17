@@ -8,7 +8,7 @@ useradd -s /bin/bash -d /home/wildfly wildfly
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.base_mac = "5254001fdbb7"
+  config.vm.base_mac = "5254008815b6"
 
   # Single machine definition for standalone testing
   #config.vm.box = "centos/7"
