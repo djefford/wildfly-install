@@ -23,13 +23,13 @@ batch
 /profile=full-ha/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
 /profile=ha/subsystem=mail/mail-session="java:mail/mail_01"/server=smtp:add(outbound-socket-binding-ref="mail-smtp")
 
-/host=master/core-service=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=\ 
+/host=master/core-service=/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=\
 	mail-smtp:write-attribute(name="host",value="{{SMTP_SERVER}}")
-/host=master/core-service=/socket-binding-group=full-ha-sockets/remote-destination-outbound-socket-binding=\ 
+/host=master/core-service=/socket-binding-group=full-ha-sockets/remote-destination-outbound-socket-binding=\
 	mail-smtp:write-attribute(name="host",value="{{SMTP_SERVER}}")
-/host=master/core-service=/socket-binding-group=full-sockets/remote-destination-outbound-socket-binding=\ 
+/host=master/core-service=/socket-binding-group=full-sockets/remote-destination-outbound-socket-binding=\
 	mail-smtp:write-attribute(name="host",value="{{SMTP_SERVER}}")
-/host=master/core-service=/socket-binding-group=ha-sockets/remote-destination-outbound-socket-binding=\ 
+/host=master/core-service=/socket-binding-group=ha-sockets/remote-destination-outbound-socket-binding=\
 	mail-smtp:write-attribute(name="host",value="{{SMTP_SERVER}}")
 
 
@@ -55,6 +55,10 @@ batch
 	name=secure-port,value="9443")
 
 /host=master/core-service=management/management-interface=http-interface:undefine-attribute(name=port)
+/host=master/core-service=management/management-interface=http-interface/:write-attribute( \
+	name=security-realm,value=ManagementRealm)
+/host=master/core-service=management/management-interface=native-interface:write-attribute( \
+	name=security-realm,value=ManagementRealm)
 
 ### Configure Undertow for HTTPs
 /host=master/core-service=management/security-realm=HTTPSRealm/:add
