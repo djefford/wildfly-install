@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
     master.vm.box = "centos/7"
     master.vm.synced_folder ".", "/vagrant"
     master.vm.hostname = "master.vagrant.box"
-    master.vm.network "public_network"
+    master.vm.network "private_network", type: "dhcp"
     master.vm.provision "shell", inline: $basic_config
   end
 
@@ -30,7 +30,7 @@ Vagrant.configure("2") do |config|
     slave.vm.box = "centos/7"
     slave.vm.synced_folder ".", "/vagrant"
     slave.vm.hostname = "slave.vagrant.box"
-    slave.vm.network "public_network"
+    slave.vm.network "private_network", type: "dhcp"
     slave.vm.provision "shell", inline: $basic_config
   end
 

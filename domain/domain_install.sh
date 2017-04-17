@@ -115,8 +115,13 @@ print_line "Start: Replacing Variables in templates." ; sleep 2
 
 # Set-up dynamic variables
 short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-#ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
-ip_addr="192.168.1.31"
+
+# Check for optional IP, if none, try to determine IP address
+if [ -z "${OPT_IP}" ]; then
+  ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+else
+  ip_addr="${OPT_IP}"
+fi
 
 if [ "$ldap_go" == "y" ]; then
   secondary_acct="$LDAP_SECONDARY_DN"
