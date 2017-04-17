@@ -21,8 +21,8 @@ batch
 ### Add Domain Controller
 /host=slave:write-remote-domain-controller( \
     host="master.vagrant.box", \
-    port="${jboss.domain.master.port:9999}", \
+    port="${jboss.domain.master.port:9443}", \
     security-realm="ManagementRealm", \
-    username="secondary_acct")
+    username="secondaryAcct")
 
 run-batch
