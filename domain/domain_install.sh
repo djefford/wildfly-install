@@ -79,7 +79,10 @@ if [ "$ldap_go" == "y" ]; then
 else
   read -s -p " Password for local admin account: " local_admin_pass ; print_line
 #  local_admin_pass="wildfly"
-  read -s -p " Password for local secondary account: " local_secondary_pass ; print_line
+  if [ "$slave" == "y" ]; then
+    read -p " Provide the secondary account user: " secondary_user ; print_line
+    read -p " Provide the secondary account secret: " secondary_secret ; print_line
+  fi
 fi
 
 print_line "Finish: Gathering user input."
@@ -93,8 +96,6 @@ vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
 if [ "$ldap_go" == "y" ]; then
   vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
 fi
-
-vault_add_item $vault_jks_pass secondaryNodeAcctPwd secondaryNodeAcct $local_secondary_pass
 
 print_line "Finished: Configuring Vault."
 
@@ -146,6 +147,9 @@ for file in `ls ./working/templates`; do
 
   replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
   replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
+
+  replace_var "{{SECONDARY_ACCT}}" "$secondary_acct" "$file_loc"
+  replace_var "{{SECONDARY_SECRET}}" "$secondary_secret" "$file_loc"
 
   replace_var "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
   replace_var "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
