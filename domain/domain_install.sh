@@ -221,7 +221,7 @@ if [ "$ldap_go" == "y" ]; then
 else
   print_line "Start: Configure local users."
   add_local_user admin "$local_admin_pass"
-  add_local_user $secondary_acct "$local_secondary_pass"
+  #add_local_user $secondary_acct "$local_secondary_pass"
   print_line "Finish: Configure loacl users."
 fi
 
