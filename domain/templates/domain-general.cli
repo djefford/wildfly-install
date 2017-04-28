@@ -79,10 +79,6 @@ batch
 /profile=ha/subsystem=undertow/server=default-server/https-listener=https:add( \
 	socket-binding=https,security-realm=HTTPSRealm)
 
-### Remove default server groups
-/server-group=main-server-group:stop-servers
-/server-group=other-server-group:stop-servers
-
 /host=master/server-config=server-one:remove
 /host=master/server-config=server-two:remove
 /host=master/server-config=server-three:remove
