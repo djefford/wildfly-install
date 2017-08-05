@@ -3,6 +3,7 @@
 
 Vagrant.configure(2) do |config|
   config.vm.base_mac = "525400ada096"
+  config.vbguest.iso_path = "/home/djefford/Media/VBoxGuestAdditions_5.0.4.iso"
 
   # Server 1 definition
   config.vm.define "server1" do |s1|
