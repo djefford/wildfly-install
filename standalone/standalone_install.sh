@@ -6,6 +6,7 @@
 #   in the repository.
 # Author: Dustin Jefford
 ##################################################
+set -u
 
 source ./utilities
 source ./parameters
@@ -14,15 +15,34 @@ print_divider
 print_title "Starting Wildfly 8 Installation in standalone mode."
 print_divider ; sleep 2
 
-print_title "Gathering User Input"
+print_title "Gathering User Input" ; sleep 2
 
-# print_line "Start: Verifying directories." ; sleep 2
-#
-# create_dir "${WILDFLY_HOME}"
-# create_dir "${LOGS_DIR}"
-#
-# print_line "Finish: Verifying directories."
-#
+# Gather user input.
+read -s -p "-- Default password for java keystore: " java_jks_pass ; echo ""
+read -s -p "-- Default password for vault keystore: " vault_jks_pass ; echo ""
+
+# Verify OpenJDK 1.8 is available
+print_divider
+print_title "Verifying Java version" ; sleep 2
+
+# Try to locate java executable
+if type -p java ; then
+  print_line "Found 'java' executable in PATH"
+  _java=java
+elif [[ -n "${JAVA_HOME}" ]] && [[ -x "${JAVA_HOME}/bin/java" ]] ; then
+  print_line "Found 'java' executable in JAVA_HOME"
+else
+  print_line "Unable to locate 'java' executable"
+  exit 1
+fi
+
+# Verify and create software directories
+print_divider
+print_title "Create Directories" ; sleep 2
+
+create_dir "${WILDFLY_HOME}"
+create_dir "${LOGS_DIR}"
+
 # print_divider
 # print_line "Start: Unpacking Wildfly Media" ; sleep 2
 #
