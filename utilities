@@ -84,12 +84,12 @@ create_dir () {
   new_dir=$1
 
   if [ ! -d ${new_dir} ]; then
-    print_line "I: Cannot locate ${new_dir}. Creating..."
+    print_line "Cannot locate ${new_dir}. Creating..."
     mkdir -p ${new_dir} ; rc=$?
-    rc_eval "${rc}" "I: Successfully created ${new_dir}." \
-      "E: Unable to create ${new_dir}."
+    rc_eval "${rc}" "Successfully created ${new_dir}." \
+      "ERROR: Unable to create ${new_dir}."
   else
-    print_line "I: Directory ${new_dir} already exists. Skipping."
+    print_line "Directory ${new_dir} already exists. Skipping."
   fi
 
 }
