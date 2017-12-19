@@ -20,8 +20,14 @@ print_divider ; sleep 2
 print_title "Gathering User Input" ; sleep 2
 
 # Gather user input.
-read -s -p "-- Default password for java keystore: " java_jks_pass ; echo ""
-read -s -p "-- Default password for vault keystore: " vault_jks_pass ; echo ""
+read -p "-- Customize keystore and admin user passwords? (y/n): " customize ; echo ""
+if [[ "$customize" == "y" ]] ; then
+  read -s -p "-- New password for java keystore: " java_jks_pass ; echo ""
+  read -s -p "-- New password for vault keystore: " vault_jks_pass ; echo ""
+else
+  java_jks_pass="changeit"
+  vault_jks_pass="changeit"
+fi
 
 # Verify OpenJDK 1.8 is available
 print_divider
@@ -58,34 +64,16 @@ mv ./working/media/wildfly-11.0.0.Final/* $WILDFLY_HOME ; rc=$?
 rc_eval "${rc}" "Successfully moved media to ${WILDFLY_HOME}." \
   "ERROR: Failed to move media to ${WILDFLY_HOME}."
 
-# print_divider
-# print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
-#
-# verify_loc "./ssl/keystore.jks"
-# #verify_loc "./ssl/truststore.jks"
-# verify_loc "./ssl/vault.jks"
-#
-# cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
-# rc_eval "${rc}" "I: Successfully moved SSL keystores to ${WILDFLY_HOME}." \
-#   "E: Failed to move SSL keystores to ${WILDFLY_HOME}."
-#
-# print_line "Finish: Placing SSL keystore files."
-#
-# print_divider
-# print_line "Start: Gathering user input." ; sleep 2
-#
-# read -p " Configure External LDAP for Administration? (y/n): " ldap_go ; print_line
-#
-# read -s -p " Password for java keystore: "  java_jks_pass ; print_line
-# #read -s -p " Password for java truststore: " trust_jks_pass ; print_line
-# read -s -p " Password for vault keystore: " vault_jks_pass ; print_line
-#
-# if [ "$ldap_go" == "y" ]; then
-#   read -s -p " Password for LDAP Bind account: " ldap_bind_pass ; print_line
-# else
-#   read -s -p " Password for local admin account: " local_admin_pass ; print_line
-# fi
-#
+#TODO(djefford) Add in steps to force keystore password rotation
+
+# Place keystore and vault jks files in appropriate location.
+print_divider
+print_line "Placing SSL keystore files" ; sleep 2
+
+cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
+rc_eval "${rc}" "Moved SSL keystores to ${WILDFLY_HOME}." \
+  "ERROR: Failed to move SSL keystores to ${WILDFLY_HOME}."
+
 # print_line "Finish: Gathering user input."
 #
 # print_divider
