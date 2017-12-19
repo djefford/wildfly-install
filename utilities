@@ -13,8 +13,15 @@ print_line () {
   message=$1
 
   format=" %s\n"
-  printf "${format}" "$1"
+  printf "${format}" "$message"
 
+}
+
+print_title () {
+  message=$1
+
+  format=" %s\n"
+  printf "${format}" "--=== $message ===--"
 }
 
 print_divider () {
