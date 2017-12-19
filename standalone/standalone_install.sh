@@ -1,6 +1,6 @@
 #!/bin/bash
 ##################################################
-# Description: Installs, patches, and configures Wildfly 8.2.X in standalone mode
+# Description: Installs, patches, and configures Wildfly in standalone mode
 #
 # This script is designed to be called one directory higher than it is placed
 #   in the repository.
@@ -11,8 +11,10 @@ set -u
 source ./utilities
 source ./parameters
 
+VERSION="11"
+
 print_divider
-print_title "Starting Wildfly 8 Installation in standalone mode."
+print_title "Starting Wildfly $VERSION Installation in standalone mode."
 print_divider ; sleep 2
 
 print_title "Gathering User Input" ; sleep 2
@@ -38,34 +40,24 @@ fi
 
 # Verify and create software directories
 print_divider
-print_title "Create Directories" ; sleep 2
+print_title "Creating Base Directories" ; sleep 2
 
 create_dir "${WILDFLY_HOME}"
 create_dir "${LOGS_DIR}"
 
-# print_divider
-# print_line "Start: Unpacking Wildfly Media" ; sleep 2
-#
-# mkdir -p ./working/media
-#
-# extract_zip_media $MAIN_MEDIA ./working/media
-#
-# # Move unpacked directory to WILDFLY_HOME
-# mv ./working/media/wildfly-8.2.1.Final/* $WILDFLY_HOME ; rc=$?
-# rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
-#   "E: Failed to move media to ${WILDFLY_HOME}."
-#
-# print_line "Finish: Unpacking Wildfly Media"
-#
-# # If patch files are listed, then install patch
-# if [ ${#PATCH_LIST[@]} -gt 0 ]; then
-#   print_divider
-#   print_line "Start patching:"
-#   for patch in $PATCH_LIST ; do
-#     apply_patch $patch
-#   done
-# fi
-#
+# Extract Wildfly base media
+print_divider
+print_line "Extracting Wildfly Media" ; sleep 2
+
+mkdir -p ./working/media
+
+extract_zip_media $MAIN_MEDIA ./working/media
+
+# Move unpacked directory to WILDFLY_HOME
+mv ./working/media/wildfly-11.0.0.Final/* $WILDFLY_HOME ; rc=$?
+rc_eval "${rc}" "Successfully moved media to ${WILDFLY_HOME}." \
+  "ERROR: Failed to move media to ${WILDFLY_HOME}."
+
 # print_divider
 # print_line "Start: Verifying and placing SSL keystore files." ; sleep 2
 #
