@@ -20,4 +20,4 @@ useradd -s /bin/bash -d /home/wildfly wildfly
 
 groupadd wfadmin
 
-usermoad -a -G wfadmin vagrant
+usermod -a -G wfadmin vagrant
