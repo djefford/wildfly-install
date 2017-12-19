@@ -2,7 +2,7 @@
 WILDFLY_HOME="/opt/software/wildfly"
 LOGS_DIR="/opt/logs/wildfly"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
-MAIN_MEDIA="/vagrant/wildfly-8.2.1.Final.zip"
+MAIN_MEDIA="/vagrant/wildfly-11.0.0.Final.zip"
 HOSTNAME="master.vagrant.box"
 # (Optional) IP Address of Host
 OPT_IP="172.28.128.3"
