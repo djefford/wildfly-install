@@ -11,7 +11,7 @@ source ./utilities
 source ./parameters
 
 print_divider
-print_line "Starting Wildfly 8 Installation in standalone mode."
+print_title "Starting Wildfly 8 Installation in standalone mode."
 print_divider ; sleep 2
 
 print_title "Gathering User Input"
@@ -34,7 +34,7 @@ print_title "Gathering User Input"
 # mv ./working/media/wildfly-8.2.1.Final/* $WILDFLY_HOME ; rc=$?
 # rc_eval "${rc}" "I: Successfully moved media to ${WILDFLY_HOME}." \
 #   "E: Failed to move media to ${WILDFLY_HOME}."
-# 
+#
 # print_line "Finish: Unpacking Wildfly Media"
 #
 # # If patch files are listed, then install patch

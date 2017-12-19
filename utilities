@@ -12,7 +12,7 @@ print_line () {
 
   message=$1
 
-  format=" %s\n"
+  format="%s\n"
   printf "${format}" "$message"
 
 }
@@ -20,14 +20,14 @@ print_line () {
 print_title () {
   message=$1
 
-  format=" %s\n"
+  format="%s\n"
   printf "${format}" "--=== $message ===--"
 }
 
 print_divider () {
 
   format="=%.s"
-  printf "${format}" {1..50} ; echo
+  printf "${format}" {1..80} ; echo
 
 }
 
