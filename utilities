@@ -353,3 +353,18 @@ start_stop_domain () {
     "E: Wildfly ${cmd} failed."
 
 }
+
+##################################################
+# Change keystore password.
+# Globals:
+#   None
+# Arguments:
+#
+# Returns:
+#   None
+##################################################
+change_keystore_pass () {
+
+  print_line "Changing password."
+
+}
