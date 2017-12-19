@@ -29,7 +29,7 @@ else
   vault_jks_pass="changeit"
 fi
 
-# Verify OpenJDK 1.8 is available
+# Verify Java is available
 print_divider
 print_title "Verifying Java version" ; sleep 2
 
