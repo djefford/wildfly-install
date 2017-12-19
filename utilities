@@ -13,7 +13,7 @@ print_line () {
   message=$1
 
   format="%s\n"
-  printf "${format}" "$message"
+  printf "${format}" "-= $message"
 
 }
 
