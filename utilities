@@ -175,7 +175,7 @@ vault_add_item () {
   sec_value=$4
 
   # Build vault command.
-  vault_cmd="${WILDFLY_HOME}/bin/vault.sh -e ${VAULT_ENC_FILE_DIR} \
+  vault_cmd="${WILDFLY_HOME}/bin/vault.sh -t -e ${VAULT_ENC_FILE_DIR} \
     -k ${VAULT_KEYSTORE} \
     -p \"${vault_pass}\" \
     -s ${VAULT_SALT} \

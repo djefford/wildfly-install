@@ -80,16 +80,14 @@ if [[ "${customize}" == "y" ]]; then
   change_keystore_pass "${WILDFLY_HOME}/ssl/keystore.jks" \
     "appserver" "changeit" "${java_jks_pass}"
 
-  change_keystore_pass "${WILDFLY_HOME}/ssl/vault.jks" \
-    "vault" "changeit" "${vault_jks_pass}"
 fi
 
-# print_divider
-# print_line "Start: Configuring Vault and store secrets." ; sleep 2
-#
-# vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
-# #vault_add_item $vault_jks_pass trustKeystorePwd trustKeystore $trust_jks_pass
-#
+# Initialize Vault and store secrets
+print_divider
+print_title "Configuring Vault and Adding Secrets" ; sleep 2
+
+vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
+
 # if [ "$ldap_go" == "y" ]; then
 #   vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
 # fi
