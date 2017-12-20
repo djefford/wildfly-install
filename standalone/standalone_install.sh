@@ -135,19 +135,18 @@ for file in `ls ./working/templates`; do
   print_line "Updated ${file_loc}"
 
 done
-#
-# print_line "Finish: Variable replacement"
-#
-# print_divider
-# print_line "Start: Placing start-up scripts" ; sleep 2
-#
-# mkdir -p ${WILDFLY_HOME}/conf/standalone
-# mkdir -p ${WILDFLY_HOME}/conf/scripts
-#
-# cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
-# cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
-# cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
-#
+
+# Place scripts and configuration files
+print_divider
+print_title "Placing Scripts and Configuration Files" ; sleep 2
+
+mkdir -p ${WILDFLY_HOME}/conf/standalone
+mkdir -p ${WILDFLY_HOME}/conf/scripts
+
+cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
+cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
+
 # print_line "Finish: Placing start-up scripts"
 #
 # print_divider
