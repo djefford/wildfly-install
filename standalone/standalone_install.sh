@@ -95,53 +95,46 @@ vault_mask_pass=`vault_add_item $vault_jks_pass vaultAuthPwd vaultAuth $vault_jk
 # Remove beginning and trailing "
 vault_mask_pass=$(sed -e 's/^"//' -e 's/".*$//' <<<"$vault_mask_pass")
 
-#
-# print_divider
-# print_line "Start: Replacing Variables in templates." ; sleep 2
-#
-# # Set-up dynamic variables
-# short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
-#
-# # Check for optional IP, if none, try to determine IP address
-# if [ -z "${OPT_IP}" ]; then
-#   ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
-# else
-#   ip_addr="${OPT_IP}"
-# fi
-#
-# cp -r standalone/templates ./working
-#
-# for file in `ls ./working/templates`; do
-#   file_loc="./working/templates/$file"
-#   print_line "Updating ${file_loc}..."
-#
-#   replace_var "{{WILDFLY_HOME}}" "$WILDFLY_HOME" "$file_loc"
-#   replace_var "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
-#   replace_var "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
-#   replace_var "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
-#   replace_var "{{SMTP_SERVER}}" "$SMTP_SERVER" "$file_loc"
-#   replace_var "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
-#   replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
-#
-#   replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
-#   replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
-#
-#   replace_var "{{LDAP_URL}}" "$LDAP_URL" "$file_loc"
-#   replace_var "{{LDAP_ADMIN_GROUP}}" "$LDAP_ADMIN_GROUP" "$file_loc"
-#   replace_var "{{LDAP_ADMIN_GROUP_DN}}" "$LDAP_ADMIN_GROUP_DN" "$file_loc"
-#   replace_var "{{LDAP_BIND_DN}}" "$LDAP_BIND_DN" "$file_loc"
-#   replace_var "{{LDAP_NAME_ATTRIBUTE}}" "$LDAP_NAME_ATTRIBUTE" "$file_loc"
-#   replace_var "{{LDAP_BASE_DN}}" "$LDAP_BASE_DN" "$file_loc"
-#
-#   replace_var "{{VAULT_ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
-#   replace_var "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
-#   replace_var "{{VAULT_ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
-#   replace_var "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
-#   replace_var "{{VAULT_KEYSTORE}}" "$VAULT_KEYSTORE" "$file_loc"
-#
-#   replace_var "{{VAULT_MASKED_PASSWORD}}" "$vault_mask_pass" "$file_loc"
-#
-# done
+# Backup and Update template files
+print_divider
+print_title "Updating Templates" ; sleep 2
+
+# Set-up dynamic variables
+short_hostname=$(sed -e 's/\..*//' <<<"$HOSTNAME")
+
+# Check for optional IP, if none, try to determine IP address
+if [ -z "${OPT_IP}" ]; then
+  ip_addr=$(sed -e 's/ $//' <<<"$(hostname -I)")
+else
+  ip_addr="${OPT_IP}"
+fi
+
+cp -r standalone/templates ./working
+
+for file in `ls ./working/templates`; do
+  file_loc="./working/templates/$file"
+
+  replace_var "{{WILDFLY_HOME}}" "$WILDFLY_HOME" "$file_loc"
+  replace_var "{{JAVA_HOME}}" "$JAVA_HOME" "$file_loc"
+  replace_var "{{LOGS_DIR}}" "$LOGS_DIR" "$file_loc"
+  replace_var "{{HOSTNAME}}" "$HOSTNAME" "$file_loc"
+  replace_var "{{WILDFLY_USER}}" "$WILDFLY_USER" "$file_loc"
+  replace_var "{{ADMIN_GROUP}}" "$ADMIN_GROUP" "$file_loc"
+
+  replace_var "{{SHORT_HOSTNAME}}" "$short_hostname" "$file_loc"
+  replace_var "{{IP_ADDR}}" "$ip_addr" "$file_loc"
+
+  replace_var "{{VAULT_ENC_FILE_DIR}}" "$VAULT_ENC_FILE_DIR" "$file_loc"
+  replace_var "{{VAULT_SALT}}" "$VAULT_SALT" "$file_loc"
+  replace_var "{{VAULT_ITERATION_COUNT}}" "$VAULT_ITERATION_COUNT" "$file_loc"
+  replace_var "{{VAULT_ALIAS}}" "$VAULT_ALIAS" "$file_loc"
+  replace_var "{{VAULT_KEYSTORE}}" "$VAULT_KEYSTORE" "$file_loc"
+
+  replace_var "{{VAULT_MASKED_PASSWORD}}" "$vault_mask_pass" "$file_loc"
+
+  print_line "Updated ${file_loc}"
+
+done
 #
 # print_line "Finish: Variable replacement"
 #
