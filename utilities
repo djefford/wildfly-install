@@ -355,16 +355,46 @@ start_stop_domain () {
 }
 
 ##################################################
-# Change keystore password.
+# Change keystore password. PKCS12 format is expected.
 # Globals:
 #   None
 # Arguments:
-#
+#   Keystore location (relative path)
+#   Certificate alias to be updated
+#   Current password
+#   New password
 # Returns:
 #   None
 ##################################################
 change_keystore_pass () {
 
-  print_line "Changing password."
+  keystore_loc="${1}"
+  cert_alias="${2}"
+  old_pass="${3}"
+  new_pass="${4}"
+
+  print_line "Rotating keystore password for ${keystore_loc}"
+
+  keytool -storepasswd \
+    -new ${new_pass} \
+    -storepass ${old_pass} \
+    -keystore ${keystore_loc}
+  rc=$?
+
+  rc_eval "${rc}" "Successfully rotated keystore password." \
+    "ERROR: Keystore password rotation failed."
+
+  print_line "Rotating private key password for ${keystore_loc}"
+
+  keytool -keypasswd \
+    -new ${new_pass} \
+    -keypass ${old_pass} \
+    -storepass ${new_pass} \
+    -keystore ${keystore_loc} \
+    -alias ${cert_alias}
+  rc=$?
+
+  rc_eval "${rc}" "Successfully rotated private key password." \
+    "ERROR: Private key password rotation failed."
 
 }

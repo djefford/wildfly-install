@@ -14,7 +14,7 @@ source ./parameters
 VERSION="11"
 
 print_divider
-print_title "Starting Wildfly $VERSION Installation in standalone mode."
+print_title "Starting Wildfly $VERSION Installation in standalone mode"
 print_divider ; sleep 2
 
 print_title "Gathering User Input" ; sleep 2
@@ -53,7 +53,7 @@ create_dir "${LOGS_DIR}"
 
 # Extract Wildfly base media
 print_divider
-print_line "Extracting Wildfly Media" ; sleep 2
+print_title "Extracting Wildfly Media" ; sleep 2
 
 mkdir -p ./working/media
 
@@ -64,18 +64,26 @@ mv ./working/media/wildfly-11.0.0.Final/* $WILDFLY_HOME ; rc=$?
 rc_eval "${rc}" "Successfully moved media to ${WILDFLY_HOME}." \
   "ERROR: Failed to move media to ${WILDFLY_HOME}."
 
-#TODO(djefford) Add in steps to force keystore password rotation
-
 # Place keystore and vault jks files in appropriate location.
 print_divider
-print_line "Placing SSL keystore files" ; sleep 2
+print_title "Placing SSL keystore files" ; sleep 2
 
 cp -r "./ssl" "${WILDFLY_HOME}/" ; rc=$?
 rc_eval "${rc}" "Moved SSL keystores to ${WILDFLY_HOME}." \
   "ERROR: Failed to move SSL keystores to ${WILDFLY_HOME}."
 
-# print_line "Finish: Gathering user input."
-#
+# Rotate keystore passwords if custom option requested.
+if [[ "${customize}" == "y" ]]; then
+  print_divider
+  print_title "Updating Keystore Passwords"
+
+  change_keystore_pass "${WILDFLY_HOME}/ssl/keystore.jks" \
+    "appserver" "changeit" "${java_jks_pass}"
+
+  change_keystore_pass "${WILDFLY_HOME}/ssl/vault.jks" \
+    "vault" "changeit" "${vault_jks_pass}"
+fi
+
 # print_divider
 # print_line "Start: Configuring Vault and store secrets." ; sleep 2
 #
