@@ -4,12 +4,14 @@ LOGS_DIR="/opt/logs/wildfly"
 JAVA_HOME="/usr/lib/jvm/jre-openjdk"
 MAIN_MEDIA="/vagrant/wildfly-11.0.0.Final.zip"
 HOSTNAME="master.vagrant.box"
-# (Optional) IP Address of Host
-OPT_IP="172.28.128.3"
+
+# Domain Installation
 MASTER_HOSTNAME="master.vagrant.box"
 
+# (Optional) IP Address of Host
+OPT_IP="172.28.128.3"
+
 # Wildfly Configuration Variables
-SMTP_SERVER="mail.google.com"
 WILDFLY_USER="wildfly"
 ADMIN_GROUP="vagrant"
 
