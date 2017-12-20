@@ -88,23 +88,13 @@ print_title "Configuring Vault and Adding Secrets" ; sleep 2
 
 vault_add_item $vault_jks_pass javaKeystorePwd javaKeystore $java_jks_pass
 
-# if [ "$ldap_go" == "y" ]; then
-#   vault_add_item $vault_jks_pass ldapAuthPwd ldapAuth $ldap_bind_pass
-# fi
-#
-# print_line "Finished: Configuring Vault."
-#
-# print_divider
-# print_line "Start: Capture masked vault password." ; sleep 2
-#
-# # Grab masked password for vault for later use
-# vault_mask_pass=`vault_add_item $vault_jks_pass vaultAuthPwd vaultAuth $vault_jks_pass \
-#   | grep -o "\"MASK-.*\""`
-#
-# # Remove beginning and trailing "
-# vault_mask_pass=$(sed -e 's/^"//' -e 's/"$//' <<<"$vault_mask_pass")
-#
-# print_line "Finish: Captured masked vault password."
+# Grab masked password for vault for later use
+vault_mask_pass=`vault_add_item $vault_jks_pass vaultAuthPwd vaultAuth $vault_jks_pass \
+  | grep -o "\"MASK-.*\""`
+
+# Remove beginning and trailing "
+vault_mask_pass=$(sed -e 's/^"//' -e 's/".*$//' <<<"$vault_mask_pass")
+
 #
 # print_divider
 # print_line "Start: Replacing Variables in templates." ; sleep 2
