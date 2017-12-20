@@ -142,34 +142,27 @@ print_title "Placing Scripts and Configuration Files" ; sleep 2
 
 mkdir -p ${WILDFLY_HOME}/conf/standalone
 mkdir -p ${WILDFLY_HOME}/conf/scripts
+mkdir -p ${WILDFLY_HOME}/conf/crontabs
 
 cp ./working/templates/wildfly.conf ${WILDFLY_HOME}/conf/standalone
-cp ./working/templates/wildfly-init.sh ${WILDFLY_HOME}/conf/scripts
 cp ./working/templates/wildfly\@.service ${WILDFLY_HOME}/conf/scripts
+cp ./working/templates/wildflyPerms.sh ${WILDFLY_HOME}/conf/crontabs/
 
-# print_line "Finish: Placing start-up scripts"
-#
-# print_divider
-# print_line "Start: Updating permissions." ; sleep 2
-#
-# mkdir -p ${WILDFLY_HOME}/conf/crontabs
-#
-# cp ./working/templates/wildflyPerms.sh ${WILDFLY_HOME}/conf/crontabs/
-#
-# ${WILDFLY_HOME}/conf/crontabs/wildflyPerms.sh ; rc=$?
-#
-# rc_eval "${rc}" "I: Successfully updated permissions." \
-#   "E: Permissions updates failed."
-#
-# print_line "Finish: Updating permissions"
-#
-# print_divider
-# print_line "Start: Starting wildfly." ; sleep 2
-#
-# start_stop_standalone start
-#
-# print_line "Finish: Starting wildfly."
-#
+# Update permissions in preparation for initial start-up
+print_divider
+print_line "Updating Permissions" ; sleep 2
+
+${WILDFLY_HOME}/conf/crontabs/wildflyPerms.sh ; rc=$?
+
+rc_eval "${rc}" "I: Successfully updated permissions." \
+  "E: Permissions updates failed."
+
+# Start Wildfly
+print_divider
+print_line "Starting Wildfly $VERSION" ; sleep 2
+
+start_stop_standalone start
+
 # print_divider
 # print_line "Start: Standard configuartion of standalone instance"
 #
