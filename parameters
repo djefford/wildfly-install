@@ -13,19 +13,6 @@ SMTP_SERVER="mail.google.com"
 WILDFLY_USER="wildfly"
 ADMIN_GROUP="vagrant"
 
-# (Optional) Patch List
-PATCH_LIST=()
-
-### LDAP related configurations
-LDAP_URL="ldap://support1.mustin.vm:389"
-LDAP_ADMIN_GROUP="wildfly_admins"
-LDAP_ADMIN_GROUP_DN="cn=wildfly_admins,cn=Group,dc=mustin,dc=vm"
-LDAP_BIND_DN="cn=admin,dc=mustin,dc=vm"
-LDAP_NAME_ATTRIBUTE="uid"
-LDAP_BASE_DN="dc=mustin,dc=vm"
-
-LDAP_SECONDARY_DN="cn=secondary_wildfly,dc=mustin,dc=vm"
-
 # Vault related information
 VAULT_ENC_FILE_DIR="${WILDFLY_HOME}/vault/"
 VAULT_SALT="12345678"
