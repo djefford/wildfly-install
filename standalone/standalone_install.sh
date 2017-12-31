@@ -31,7 +31,7 @@ fi
 
 # Verify Java is available
 print_divider
-print_title "Verifying Java version" ; sleep 2
+print_title "Verifying Java Installation" ; sleep 2
 
 # Try to locate java executable
 if type -p java ; then
